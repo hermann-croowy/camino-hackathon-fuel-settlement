@@ -1,10 +1,18 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { HiMenuAlt4 } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
 
 import logo from '../../images/logo.png'
 
-const NavbarItem = ({title, classProps }) => {
+const NavbarItem = ({title, classProps, to }) => {
+    if (to) {
+        return (
+            <li className={`mx-4 cursor-pointer ${classProps}`}>
+                <Link to={to}>{title}</Link>
+            </li>
+        );
+    }
     return (
         <li className={`mx-4 cursor-pointer ${classProps}`}>
             {title}
@@ -21,12 +29,9 @@ const Navbar = () => {
                 <img src={logo} alt="logo" className = "w-32 cursor-pointer"/>
             </div>
             <ul className='text-white md:flex hidden list-none flex-row justify-between items-center flex-initial'>
-                {["Market", "Exchange", "Tutorials", "Wallets"].map((item, index) => (
-                    <NavbarItem key ={item + index} title={item}/>
-                ))}
-            <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
-                Connect
-            </li>
+                <NavbarItem title="Home" to="/" />
+                <NavbarItem title="Create Order" to="/create-order" />
+                <NavbarItem title="Orders" to="/orders" />
             </ul>
             <div className="flex relative">
                 {toggleMenu
@@ -42,9 +47,9 @@ const Navbar = () => {
                         <li className='text-xl w-full my-2'>
                             <AiOutlineClose onClick={() => setToggleMenu(false)} />
                         </li>
-                        {["Market", "Exchange", "Tutorials", "Wallets"].map((item, index) => (
-                        <NavbarItem key ={item + index} title={item} classProps='my-2 text-lg'/>
-                    ))}
+                        <NavbarItem title="Home" to="/" classProps='my-2 text-lg' />
+                        <NavbarItem title="Create Order" to="/create-order" classProps='my-2 text-lg' />
+                        <NavbarItem title="Orders" to="/orders" classProps='my-2 text-lg' />
                     </ul>
                 )
                 }
