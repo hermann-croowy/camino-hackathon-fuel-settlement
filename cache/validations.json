@@ -1,0 +1,410 @@
+{
+  "version": "3.4",
+  "log": [
+    {
+      "contracts/FuelSettlement.sol:FuelSettlement": {
+        "src": "contracts/FuelSettlement.sol:3",
+        "version": {
+          "withMetadata": "400a2b07d0b9fbbe9f7f9ae6089fae8ae58afc25c801537bc7e2a9de0622dc3a",
+          "withoutMetadata": "86cda6e46262857c52df61073c50a192b26238146fbf3e3589525ca220869b40",
+          "linkedWithoutMetadata": "86cda6e46262857c52df61073c50a192b26238146fbf3e3589525ca220869b40"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "()",
+          "createFuelOrder(address payable,uint256,uint256)",
+          "confirmDelivery(uint256)",
+          "cancelOrder(uint256)",
+          "declineOrder(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "FuelSettlement",
+            "src": "contracts/FuelSettlement.sol:34"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "airline",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address_payable",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:21"
+            },
+            {
+              "label": "newOrderId",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:22"
+            },
+            {
+              "label": "orders",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_struct(FuelOrder)23_storage)",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:23"
+            }
+          ],
+          "types": {
+            "t_address_payable": {
+              "label": "address payable",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_enum(OrderStatus)7": {
+              "label": "enum FuelSettlement.OrderStatus",
+              "members": [
+                "Created",
+                "Delivered",
+                "Settled",
+                "Cancelled",
+                "Declined"
+              ],
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_uint256,t_struct(FuelOrder)23_storage)": {
+              "label": "mapping(uint256 => struct FuelSettlement.FuelOrder)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(FuelOrder)23_storage": {
+              "label": "struct FuelSettlement.FuelOrder",
+              "members": [
+                {
+                  "label": "orderId",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "supplier",
+                  "type": "t_address_payable",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "quantityLitres",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "pricePerLitre",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "totalAmount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "status",
+                  "type": "t_enum(OrderStatus)7",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "deliveryConfirmed",
+                  "type": "t_bool",
+                  "offset": 1,
+                  "slot": "5"
+                }
+              ],
+              "numberOfBytes": "192"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.9"
+      }
+    },
+    {
+      "contracts/FuelSettlement.sol:FuelSettlement": {
+        "src": "contracts/FuelSettlement.sol:3",
+        "version": {
+          "withMetadata": "061345cdab68e00634fe23cecc0d270408891adc1eceb9f0655d5671f0cde44e",
+          "withoutMetadata": "a2a1fef4b3870a99b5de89af42df9ef26ba036f4eea1a56e6474160219bd0c16",
+          "linkedWithoutMetadata": "a2a1fef4b3870a99b5de89af42df9ef26ba036f4eea1a56e6474160219bd0c16"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "()",
+          "createFuelOrder(address payable,uint256,uint256)",
+          "confirmDelivery(uint256)",
+          "cancelOrder(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "FuelSettlement",
+            "src": "contracts/FuelSettlement.sol:33"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "airline",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address_payable",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:21"
+            },
+            {
+              "label": "newOrderId",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:22"
+            },
+            {
+              "label": "orders",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_struct(FuelOrder)22_storage)",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:23"
+            }
+          ],
+          "types": {
+            "t_address_payable": {
+              "label": "address payable",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_enum(OrderStatus)6": {
+              "label": "enum FuelSettlement.OrderStatus",
+              "members": [
+                "Created",
+                "Delivered",
+                "Settled",
+                "Cancelled"
+              ],
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_uint256,t_struct(FuelOrder)22_storage)": {
+              "label": "mapping(uint256 => struct FuelSettlement.FuelOrder)",
+              "numberOfBytes": "32"
+            },
+            "t_struct(FuelOrder)22_storage": {
+              "label": "struct FuelSettlement.FuelOrder",
+              "members": [
+                {
+                  "label": "orderId",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "supplier",
+                  "type": "t_address_payable",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "quantityLitres",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "pricePerLitre",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "totalAmount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "status",
+                  "type": "t_enum(OrderStatus)6",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "deliveryConfirmed",
+                  "type": "t_bool",
+                  "offset": 1,
+                  "slot": "5"
+                }
+              ],
+              "numberOfBytes": "192"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.9"
+      }
+    },
+    {
+      "contracts/FuelSettlement.sol:FuelSettlement": {
+        "src": "contracts/FuelSettlement.sol:3",
+        "version": {
+          "withMetadata": "794cb59078731ee581c57d55da16ac5344a6cd3e6bfd41af589f1dc975f62d20",
+          "withoutMetadata": "d60ccb7a0fdaa534f2cda8d0a965229f93fdf581944c5f49da647b2da05eb1a4",
+          "linkedWithoutMetadata": "d60ccb7a0fdaa534f2cda8d0a965229f93fdf581944c5f49da647b2da05eb1a4"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "createFuelOrder(address payable,string,uint256,uint256)",
+          "confirmDelivery(uint256)",
+          "cancelOrder(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "newOrderId",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:23"
+            },
+            {
+              "label": "orders",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_uint256,t_struct(FuelOrder)26_storage)",
+              "contract": "FuelSettlement",
+              "src": "contracts/FuelSettlement.sol:24"
+            }
+          ],
+          "types": {
+            "t_address_payable": {
+              "label": "address payable",
+              "numberOfBytes": "20"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_enum(OrderStatus)6": {
+              "label": "enum FuelSettlement.OrderStatus",
+              "members": [
+                "Created",
+                "Delivered",
+                "Settled",
+                "Cancelled"
+              ],
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_uint256,t_struct(FuelOrder)26_storage)": {
+              "label": "mapping(uint256 => struct FuelSettlement.FuelOrder)",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(FuelOrder)26_storage": {
+              "label": "struct FuelSettlement.FuelOrder",
+              "members": [
+                {
+                  "label": "orderId",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "airline",
+                  "type": "t_address_payable",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "supplier",
+                  "type": "t_address_payable",
+                  "offset": 0,
+                  "slot": "2"
+                },
+                {
+                  "label": "flightId",
+                  "type": "t_string_storage",
+                  "offset": 0,
+                  "slot": "3"
+                },
+                {
+                  "label": "quantityLitres",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                },
+                {
+                  "label": "pricePerLitre",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "5"
+                },
+                {
+                  "label": "totalAmount",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "6"
+                },
+                {
+                  "label": "status",
+                  "type": "t_enum(OrderStatus)6",
+                  "offset": 0,
+                  "slot": "7"
+                },
+                {
+                  "label": "deliveryConfirmed",
+                  "type": "t_bool",
+                  "offset": 1,
+                  "slot": "7"
+                }
+              ],
+              "numberOfBytes": "256"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.9"
+      }
+    }
+  ]
+}

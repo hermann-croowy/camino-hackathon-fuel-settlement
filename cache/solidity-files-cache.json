@@ -1,0 +1,41 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/nretzl/Project/Hackathon/camino-hackathon-fuel-settlement/contracts/FuelSettlement.sol": {
+      "lastModificationDate": 1764172773262,
+      "contentHash": "6b2500ac35ce6166b191baf00322e1a9",
+      "sourceName": "contracts/FuelSettlement.sol",
+      "solcConfig": {
+        "version": "0.8.9",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.9"
+      ],
+      "artifacts": [
+        "FuelSettlement"
+      ]
+    }
+  }
+}
