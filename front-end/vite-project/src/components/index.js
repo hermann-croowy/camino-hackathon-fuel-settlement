@@ -8,3 +8,4 @@ export { default as CreateOrderForm } from './CreateOrderForm';
 export { default as OrdersList } from './OrdersList';
 export { default as SupplierOrders } from './SupplierOrders';
 export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as CreateInvoice } from './CreateInvoice';

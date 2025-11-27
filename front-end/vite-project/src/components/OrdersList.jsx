@@ -394,7 +394,7 @@ const OrdersList = () => {
                                 </div>
                             ) : (
                                 <div className="border-t border-black/10 pt-6">
-                                    <div className="bg-white/30 rounded-xl p-4 text-center">
+                                    <div className="bg-white/30 rounded-xl p-4 text-center mb-4">
                                         <p className="text-black/60">
                                             {selectedOrder.status === 1 && "This order has been delivered and is awaiting settlement."}
                                             {selectedOrder.status === 2 && "This order has been completed and settled."}
@@ -402,6 +402,18 @@ const OrdersList = () => {
                                             {selectedOrder.status === 4 && "This order was declined by the supplier."}
                                         </p>
                                     </div>
+                                    {/* Invoice button for Delivered (1) or Settled (2) orders */}
+                                    {(selectedOrder.status === 1 || selectedOrder.status === 2) && (
+                                        <Button
+                                            onClick={() => navigate(`/create-invoice/${selectedOrder.orderId}`)}
+                                            className="w-full text-black border-2 p-3 h-auto border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            create invoice
+                                        </Button>
+                                    )}
                                 </div>
                             )}
                         </div>
