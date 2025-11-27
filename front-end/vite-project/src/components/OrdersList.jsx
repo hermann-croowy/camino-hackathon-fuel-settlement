@@ -25,11 +25,17 @@ const OrdersList = () => {
     const [selectedOrderId, setSelectedOrderId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [actionLoading, setActionLoading] = useState(false);
+    const [isFetchingOrders, setIsFetchingOrders] = useState(false);
 
     // Force refresh orders when component mounts and when account changes
     const refreshOrders = useCallback(async () => {
         if (currentAccount) {
-            await getAllOrders();
+            setIsFetchingOrders(true);
+            try {
+                await getAllOrders();
+            } finally {
+                setIsFetchingOrders(false);
+            }
         }
     }, [currentAccount, getAllOrders]);
 
@@ -40,14 +46,19 @@ const OrdersList = () => {
 
     // Also refresh on page focus (when user comes back to the tab)
     useEffect(() => {
-        const handleFocus = () => {
-            if (currentAccount) {
-                getAllOrders();
+        const handleFocus = async () => {
+            if (currentAccount && !isFetchingOrders) {
+                setIsFetchingOrders(true);
+                try {
+                    await getAllOrders();
+                } finally {
+                    setIsFetchingOrders(false);
+                }
             }
         };
         window.addEventListener('focus', handleFocus);
         return () => window.removeEventListener('focus', handleFocus);
-    }, [currentAccount, getAllOrders]);
+    }, [currentAccount, getAllOrders, isFetchingOrders]);
 
     useEffect(() => {
         // Clear messages after 5 seconds
@@ -146,7 +157,7 @@ const OrdersList = () => {
         );
     }
 
-    if (isLoading && orders.length === 0) {
+    if (isFetchingOrders && orders.length === 0) {
         return (
             <div className="flex w-full justify-center items-center flex-1 min-h-full">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
@@ -209,11 +220,11 @@ const OrdersList = () => {
                             <div className="flex gap-2">
                                 <Button
                                     onClick={refreshOrders}
-                                    disabled={isLoading}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent"
+                                    disabled={isFetchingOrders}
+                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-600 rounded-lg cursor-pointer bg-transparent transition-colors duration-200"
                                     title="Refresh orders"
                                 >
-                                    <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className={`w-4 h-4 ${isFetchingOrders ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                     </svg>
                                 </Button>
