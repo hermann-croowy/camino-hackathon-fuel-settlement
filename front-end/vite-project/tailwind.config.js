@@ -48,6 +48,12 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        vueling: {
+          gold: "#FCCC04",
+          "dim-gray": "#4C4C4B",
+          white: "#FFFFFF",
+          black: "#000000",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -55,8 +61,15 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        display: ["Open Sans", "sans-serif"],
-        body: ["Open Sans", "sans-serif"],
+        display: ["Rubik", "sans-serif"],
+        body: ["Rubik", "sans-serif"],
+        sans: ["Rubik", "sans-serif"],
+      },
+      fontWeight: {
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
       },
       screens: {
         mf: "990px",

@@ -7,21 +7,21 @@ const Footer = () => {
                 <div className='flex flex-[0.5] justify-center items-center '>
                     <img src={logo} alt="logo" className='w-32' />
                 </div>
-                <div className='flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full'>
-                    <p className='text-white text-base text-center mx-2 cursor-pointer'> Market </p>
-                    <p className='text-white text-base text-center mx-2 cursor-pointer'> Exchange </p>
-                    <p className='text-white text-base text-center mx-2 cursor-pointer'> Tutorial </p>
-                    <p className='text-white text-base text-center mx-2 cursor-pointer'> Wallets </p>
+                <div className='flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full vueling-lowercase'>
+                    <p className='text-black text-base text-center mx-2 cursor-pointer'> market </p>
+                    <p className='text-black text-base text-center mx-2 cursor-pointer'> exchange </p>
+                    <p className='text-black text-base text-center mx-2 cursor-pointer'> tutorial </p>
+                    <p className='text-black text-base text-center mx-2 cursor-pointer'> wallets </p>
                 </div>
             </div>
-            <div className='flex justify-center items-center flex-col mt-5'>
-                <p className='text-white text-sm text-center'> Join us</p>
-                <p className='text-white text-sm text-center'> info@ourapp.info </p>
+            <div className='flex justify-center items-center flex-col mt-5 vueling-lowercase'>
+                <p className='text-black text-sm text-center'> join us</p>
+                <p className='text-black text-sm text-center'> info@ourapp.info </p>
             </div>
-            <div className='sm:w-[90%] w-full h-[0.25px] bg-gray-400 mt-5' />
-            <div className='sm:w-[90%] w-full flex justify-between items-center mt-3 '> 
-            <p className='text-white text-sm text-center'> @ourapp.info </p>
-            <p className='text-white text-sm text-center'> All rights reserved </p>
+            <div className='sm:w-[90%] w-full h-[0.25px] bg-black opacity-20 mt-5' />
+            <div className='sm:w-[90%] w-full flex justify-between items-center mt-3 vueling-lowercase'> 
+            <p className='text-black text-sm text-center'> @ourapp.info </p>
+            <p className='text-black text-sm text-center'> all rights reserved </p>
             </div>
         </div>
     );

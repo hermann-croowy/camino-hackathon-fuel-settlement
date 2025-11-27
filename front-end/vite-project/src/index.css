@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap");
 
 * html {
   padding: 0;
@@ -8,47 +8,35 @@
 
 body {
   margin: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400; /* Normal weight for body text */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .gradient-bg-welcome {
-  background-color:#0f0e13;
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-color: #ffffff; /* Solid white background */
 }
 
 .gradient-bg-services {
-  background-color:#0f0e13;
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 100%, hsla(225,39%,25%,1) 0, transparent 50%);
+  background-color: #ffffff; /* Solid white background */
 }
 
 .gradient-bg-transactions {
-  background-color: #0f0e13;
-  background-image: 
-    radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,25%,1) 0, transparent 50%);
+  background-color: #ffffff; /* Solid white background */
 }
 
 .gradient-bg-footer {
-  background-color: #0f0e13;
-  background-image: 
-    radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 53%), 
-    radial-gradient(at 50% 150%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-color: #ffffff; /* Solid white background */
 }
 
 .blue-glassmorphism {
-  background: rgb(39, 51, 89, 0.4);
+  background: rgba(252, 204, 4, 0.1); /* Vueling Gold with transparency */
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 30px rgba(76, 76, 75, 0.2);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(252, 204, 4, 0.3); /* Vueling Gold border */
 }
 
 /* white glassmorphism */
@@ -61,22 +49,11 @@ body {
 }
 
 .eth-card {
-  background-color:#a099ff;
-  background-image: 
-    radial-gradient(at 83% 67%, rgb(152, 231, 156) 0, transparent 58%), 
-    radial-gradient(at 67% 20%, hsla(357,94%,71%,1) 0, transparent 59%), 
-    radial-gradient(at 88% 35%, hsla(222,81%,65%,1) 0, transparent 50%), 
-    radial-gradient(at 31% 91%, hsla(9,61%,61%,1) 0, transparent 52%), 
-    radial-gradient(at 27% 71%, hsla(336,91%,65%,1) 0, transparent 49%), 
-    radial-gradient(at 74% 89%, hsla(30,98%,65%,1) 0, transparent 51%), 
-    radial-gradient(at 53% 75%, hsla(174,94%,68%,1) 0, transparent 45%);
+  background-color: #FCCC04; /* Solid Vueling Gold */
 }
 
 .text-gradient {
-  background-color: #fff;
-  background-image: radial-gradient(at 4% 36%, hsla(0,0%,100%,1) 0, transparent 53%), radial-gradient(at 100% 60%, rgb(0, 0, 0) 0, transparent 50%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #000000; /* Solid black text */
 }
 
 @tailwind base;
@@ -85,48 +62,49 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Vueling Brand Colors */
+    --background: 0 0% 100%; /* White */
+    --foreground: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --primary: 51 98% 50%; /* Gold/Yellow #FCCC04 */
+    --primary-foreground: 0 0% 0%; /* Black for text on yellow */
+    --secondary: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --secondary-foreground: 0 0% 100%; /* White */
+    --muted: 0 0% 96%; /* Light gray */
+    --muted-foreground: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --accent: 51 98% 50%; /* Gold/Yellow #FCCC04 */
+    --accent-foreground: 0 0% 0%; /* Black */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive-foreground: 0 0% 100%; /* White */
+    --border: 0 0% 85%; /* Light gray border */
+    --input: 0 0% 85%; /* Light gray input */
+    --ring: 51 98% 50%; /* Gold/Yellow #FCCC04 */
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 0 0% 0%; /* Black */
+    --foreground: 0 0% 100%; /* White */
+    --card: 0 0% 10%; /* Dark gray */
+    --card-foreground: 0 0% 100%; /* White */
+    --popover: 0 0% 10%; /* Dark gray */
+    --popover-foreground: 0 0% 100%; /* White */
+    --primary: 51 98% 50%; /* Gold/Yellow #FCCC04 */
+    --primary-foreground: 0 0% 0%; /* Black */
+    --secondary: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --secondary-foreground: 0 0% 100%; /* White */
+    --muted: 0 0% 20%; /* Dark gray */
+    --muted-foreground: 0 0% 70%; /* Light gray */
+    --accent: 51 98% 50%; /* Gold/Yellow #FCCC04 */
+    --accent-foreground: 0 0% 0%; /* Black */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive-foreground: 0 0% 100%; /* White */
+    --border: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --input: 0 0% 30%; /* Dim Gray #4C4C4B */
+    --ring: 51 98% 50%; /* Gold/Yellow #FCCC04 */
   }
 }
 
@@ -136,5 +114,15 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer utilities {
+  .vueling-lowercase {
+    text-transform: uppercase;
+    font-variant: normal;
   }
 }

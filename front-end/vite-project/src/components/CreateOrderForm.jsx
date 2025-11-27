@@ -134,21 +134,21 @@ const CreateOrderForm = () => {
             <div className="flex w-full justify-center items-center flex-1 min-h-full">
                 <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4 w-full">
                     <div className="flex flex-1 justify-start flex-col mf:mr-10">
-                        <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+                        <h1 className="text-3xl sm:text-5xl text-black py-1">
                             Create Fuel <br /> Order
                         </h1>
-                        <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                        <p className="text-left mt-5 text-black font-normal md:w-9/12 w-11/12 text-base">
                             Create a new fuel order. Only the airline address can create orders.
                         </p>
                     </div>
                     <div className="flex flex-col flex-1 items-center justify-center w-full mf:mt-0 mt-10">
                         <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
-                            <p className="text-white text-base mb-4">Connect your wallet to create a new fuel order</p>
+                            <p className="text-black text-base mb-4">Connect your wallet to create a new fuel order</p>
                             <Button 
                                 onClick={connectWallet}
-                                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer bg-transparent"
+                                className="text-black w-full mt-2 border-[1px] p-2 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
                             >
-                                Connect Wallet
+                                connect wallet
                             </Button>
                         </div>
                     </div>
@@ -161,10 +161,10 @@ const CreateOrderForm = () => {
         <div className="flex w-full justify-center items-center flex-1 min-h-full">
             <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4 w-full">
                 <div className="flex flex-1 justify-start flex-col mf:mr-10">
-                    <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+                    <h1 className="text-3xl sm:text-5xl text-black py-1">
                         Create Fuel <br /> Order
                     </h1>
-                    <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                    <p className="text-left mt-5 text-black font-normal md:w-9/12 w-11/12 text-base">
                         Create a new fuel order. Only the airline address can create orders.
                     </p>
                 </div>
@@ -189,7 +189,7 @@ const CreateOrderForm = () => {
                             value={formData.supplierAddress}
                             onChange={handleInputChange}
                             step={undefined}
-                            className="my-2 bg-transparent text-white border-gray-400 placeholder:text-gray-400 focus-visible:ring-gray-400 white-glassmorphism"
+                            className="my-2 bg-transparent text-black border-black border-opacity-20 placeholder:text-black placeholder:opacity-50 focus-visible:ring-[#FCCC04] white-glassmorphism"
                         />
                         {validationErrors.supplierAddress && (
                             <p className="text-sm text-red-400 w-full text-left px-2">{validationErrors.supplierAddress}</p>
@@ -203,7 +203,7 @@ const CreateOrderForm = () => {
                             onChange={handleInputChange}
                             step="1"
                             min="1"
-                            className="my-2 bg-transparent text-white border-gray-400 placeholder:text-gray-400 focus-visible:ring-gray-400 white-glassmorphism"
+                            className="my-2 bg-transparent text-black border-black border-opacity-20 placeholder:text-black placeholder:opacity-50 focus-visible:ring-[#FCCC04] white-glassmorphism"
                         />
                         {validationErrors.quantityLitres && (
                             <p className="text-sm text-red-400 w-full text-left px-2">{validationErrors.quantityLitres}</p>
@@ -217,18 +217,18 @@ const CreateOrderForm = () => {
                             onChange={handleInputChange}
                             step="0.000001"
                             min="0"
-                            className="my-2 bg-transparent text-white border-gray-400 placeholder:text-gray-400 focus-visible:ring-gray-400 white-glassmorphism"
+                            className="my-2 bg-transparent text-black border-black border-opacity-20 placeholder:text-black placeholder:opacity-50 focus-visible:ring-[#FCCC04] white-glassmorphism"
                         />
                         {validationErrors.pricePerLitre && (
                             <p className="text-sm text-red-400 w-full text-left px-2">{validationErrors.pricePerLitre}</p>
                         )}
 
-                        <div className="h-[1px] w-full bg-gray-400 my-2" />
+                        <div className="h-[1px] w-full bg-black opacity-20 my-2" />
 
                         {totalCost !== '0' && (
                             <div className="w-full mb-2 px-2">
-                                <p className="text-white font-light text-sm">Total Cost:</p>
-                                <p className="text-white font-semibold text-lg">{totalCost} CAM</p>
+                                <p className="text-black font-normal text-sm">Total Cost:</p>
+                                <p className="text-black font-semibold text-lg">{totalCost} CAM</p>
                             </div>
                         )}
 
@@ -238,9 +238,9 @@ const CreateOrderForm = () => {
                             <Button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer bg-transparent"
+                                className="text-black w-full mt-2 border-[1px] p-2 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
                             >
-                                Create Order
+                                create order
                             </Button>
                         )}
                     </div>

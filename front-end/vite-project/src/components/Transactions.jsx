@@ -6,7 +6,7 @@ import { shortenAddress } from '../utils/shortenAddress';
 
 const TransactionCard = ({ addressTo, addressFrom, timestamp, message, amount, url }) => {
     return (
-      <div className='bg-[#181918] m-4 flex flex-1
+      <div className='bg-white border border-black border-opacity-20 m-4 flex flex-1
       2xl:min-w[450x]
       2xl:max-w[500x]
       sm:min-w-[270px]
@@ -15,18 +15,18 @@ const TransactionCard = ({ addressTo, addressFrom, timestamp, message, amount, u
       '>
         <div className='flex flex-col items-center w-full mt-3'>
             <div className='display-flex justify-center w-full mb-6 p-2'>
-                <p className='text-white text-base'> From: {shortenAddress(addressFrom)}</p>
-                <p className='text-white text-base'> To: {shortenAddress(addressTo)}</p>
-                <p className='text-white text-base'> Amount: {amount} </p>
+                <p className='text-black text-base'> From: {shortenAddress(addressFrom)}</p>
+                <p className='text-black text-base'> To: {shortenAddress(addressTo)}</p>
+                <p className='text-black text-base'> Amount: {amount} </p>
                 {message && (
                     <>
                     <br />
-                    <p className='text-white text-base'> Message: {message} </p>
+                    <p className='text-black text-base'> Message: {message} </p>
                     </>
                 )}
 
-                <div className='bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl'>
-                    <p className='text-[#37c7da] font-bold'>
+                <div className='bg-[#FCCC04] p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl'>
+                    <p className='text-black font-bold'>
                         {timestamp}
                     </p>
                 </div>
@@ -44,11 +44,11 @@ const Transactions = () => {
         <div className='flex w-full justify-center items-center 2xl:px20 gradient-bg-transactions'>
             <div className='flex flex-col md:p-12 py-12 px-4'>
                 {currentAccount ? (
-                    <h3 className='text-white text-3xl text-center my-2'>
+                    <h3 className='text-black text-3xl text-center my-2'>
                         Latest Transaction
                     </h3>
                 ): (
-                    <h3 className='text-white text-3xl text-center my-2'>
+                    <h3 className='text-black text-3xl text-center my-2'>
                         Connect your wallet to see the latest transactions
                     </h3>
                 )}

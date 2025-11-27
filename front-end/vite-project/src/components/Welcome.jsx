@@ -8,7 +8,7 @@ import { SenderContext } from "../context/SenderContext";
 import { Loader } from './';
 import { shortenAddress } from "../utils/shortenAddress";
 
-const commonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
+const commonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-black border-opacity-20 text-sm font-light text-black";
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
     <input
@@ -17,7 +17,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     step="0.0001"
     value={value}
     onChange={(e) => handleChange(e,name)}
-    className="my-2 w-full rounded-small p-2 outline-none bg-transparent text-white border-none text-small white-glassmorphism"
+    className="my-2 w-full rounded-small p-2 outline-none bg-transparent text-black border-none text-small white-glassmorphism"
     />
 )
 
@@ -38,20 +38,20 @@ const Welcome = () => {
         <div className="flex w-full justify-center items-center">
             <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
                 <div className="flex flex-1 justify-start flex-col mf:mr-10">
-                    <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+                    <h1 className="text-3xl sm:text-5xl text-black py-1">
                         Send Crypto <br /> across the world
                     </h1>
-                    <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                    <p className="text-left mt-5 text-black font-normal md:w-9/12 w-11/12 text-base">
                         Explore the crypto world. Buy and sell crypto.
                     </p>
                     {!currentAccount && (
                         <button 
                             type="button"
                             onClick={connectWallet}
-                            className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
+                            className="flex flex-row justify-center items-center my-5 bg-[#FCCC04] p-3 rounded-full cursor-pointer hover:bg-[#e6b800]"
                         >
-                        <p className="text-white text-base font-semibold">
-                        Connect Wallet
+                        <p className="text-black text-base font-semibold vueling-lowercase">
+                        connect wallet
                         </p>
                     </button>
                     )}
@@ -78,10 +78,10 @@ const Welcome = () => {
                                 <BsInfoCircle fontSize={17} color ="#fff"/>
                             </div>
                             <div>
-                                <p className="text-white font-light text-sm">
+                                <p className="text-black font-normal text-sm">
                                     {shortenAddress(currentAccount)}
                                 </p>
-                                <p className="text-white font-semibold text-lg mt-1">
+                                <p className="text-black font-semibold text-lg mt-1">
                                     Camino
                                 </p>
                             </div>
@@ -93,7 +93,7 @@ const Welcome = () => {
                         <Input placeholder="Amount (CAM)" name="amount" type="number" handleChange={handleChange} />
                         <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
 
-                        <div className="h-[1px] w-full bg-gray-400 my-2" /> 
+                        <div className="h-[1px] w-full bg-black opacity-20 my-2" /> 
 
                         {isLoading ? ( 
                             <Loader />
@@ -101,9 +101,9 @@ const Welcome = () => {
                                 <button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                                className="text-black w-full mt-2 border-[1px] p-2 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
                                 >
-                                Send now
+                                send now
                                 </button>
                             )}
                     </div>
