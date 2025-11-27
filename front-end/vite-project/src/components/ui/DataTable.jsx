@@ -20,7 +20,7 @@ const DataTable = ({
     setGlobalFilter,
     onRowClick,
     selectedRowId,
-    pageSize = 5,
+    pageSize = 6,
 }) => {
     // Track pagination internally within the table
     const [pagination, setPagination] = useState({
@@ -106,39 +106,62 @@ const DataTable = ({
                     </thead>
                     <tbody>
                         {table.getRowModel().rows.length === 0 ? (
-                            <tr>
-                                <td
-                                    colSpan={columns.length}
-                                    className="px-4 py-12 text-center text-black/60"
-                                >
-                                    No orders found
-                                </td>
-                            </tr>
-                        ) : (
-                            table.getRowModel().rows.map((row) => (
-                                <tr
-                                    key={row.id}
-                                    onClick={() => onRowClick?.(row.original)}
-                                    className={cn(
-                                        "border-b border-gray-100 transition-colors cursor-pointer",
-                                        selectedRowId === row.original.orderId
-                                            ? "bg-[#FCCC04]/20"
-                                            : "hover:bg-[#FCCC04]/5"
-                                    )}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <td
-                                            key={cell.id}
-                                            className="px-3 py-4 text-sm text-black md:px-5"
-                                        >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </td>
-                                    ))}
+                            // Show empty state with placeholder rows for consistent height
+                            <>
+                                <tr>
+                                    <td
+                                        colSpan={columns.length}
+                                        className="px-4 py-12 text-center text-black/60"
+                                    >
+                                        No orders found
+                                    </td>
                                 </tr>
-                            ))
+                                {/* Add placeholder rows to maintain table height */}
+                                {Array.from({ length: pageSize - 1 }, (_, i) => (
+                                    <tr key={`empty-${i}`} className="border-b border-gray-100">
+                                        <td colSpan={columns.length} className="px-3 py-4 md:px-5">
+                                            <div className="h-5" />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        ) : (
+                            <>
+                                {table.getRowModel().rows.map((row) => (
+                                    <tr
+                                        key={row.id}
+                                        onClick={() => onRowClick?.(row.original)}
+                                        className={cn(
+                                            "border-b border-gray-100 transition-colors cursor-pointer",
+                                            selectedRowId === row.original.orderId
+                                                ? "bg-[#FCCC04]/20"
+                                                : "hover:bg-[#FCCC04]/5"
+                                        )}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td
+                                                key={cell.id}
+                                                className="px-3 py-4 text-sm text-black md:px-5"
+                                            >
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                                {/* Add placeholder rows to fill remaining space */}
+                                {table.getRowModel().rows.length < pageSize &&
+                                    Array.from({ length: pageSize - table.getRowModel().rows.length }, (_, i) => (
+                                        <tr key={`placeholder-${i}`} className="border-b border-gray-100">
+                                            <td colSpan={columns.length} className="px-3 py-4 md:px-5">
+                                                <div className="h-5" />
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </>
                         )}
                     </tbody>
                 </table>

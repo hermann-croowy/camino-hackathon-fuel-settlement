@@ -407,7 +407,7 @@ const OrdersList = () => {
                             setColumnFilters={setColumnFilters}
                             onRowClick={(row) => setSelectedOrderId(row.orderId)}
                             selectedRowId={selectedOrderId}
-                            pageSize={8}
+                            pageSize={6}
                         />
                     </div>
                 </div>
