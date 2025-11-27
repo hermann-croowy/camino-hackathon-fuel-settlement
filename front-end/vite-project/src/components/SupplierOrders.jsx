@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { FuelSettlementContext } from '../context/FuelSettlementContext';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
 import { Loader } from './';
-
-const ORDERS_PER_PAGE = 5;
+import { DataTable } from './ui/DataTable';
+import { StatusFilter, AddressFilter, QuickFilterButton, FilterBar, FilterLabel } from './ui/TableFilters';
 
 const SupplierOrders = () => {
     const {
@@ -24,9 +24,13 @@ const SupplierOrders = () => {
     } = useContext(FuelSettlementContext);
 
     const [selectedOrderId, setSelectedOrderId] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
     const [actionLoading, setActionLoading] = useState(false);
     const [isFetchingOrders, setIsFetchingOrders] = useState(false);
+    
+    // Table state
+    const [sorting, setSorting] = useState([{ id: 'orderId', desc: true }]); // Default: newest first
+    const [columnFilters, setColumnFilters] = useState([{ id: 'status', value: '0' }]); // Default: Needs Action filter
+    const [needsActionFilter, setNeedsActionFilter] = useState(true); // Enabled by default
 
     // Force refresh orders when component mounts and when account changes
     const refreshOrders = useCallback(async () => {
@@ -74,29 +78,23 @@ const SupplierOrders = () => {
     }, [error, success, setError, setSuccess]);
 
     // Filter orders where current account is the supplier
-    const supplierOrders = orders.filter(
-        (order) => currentAccount && order.supplier.toLowerCase() === currentAccount.toLowerCase()
-    );
+    const supplierOrders = useMemo(() => {
+        return orders.filter(
+            (order) => currentAccount && order.supplier.toLowerCase() === currentAccount.toLowerCase()
+        );
+    }, [orders, currentAccount]);
 
-    // Pagination calculations
-    const totalPages = Math.ceil(supplierOrders.length / ORDERS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-    const endIndex = startIndex + ORDERS_PER_PAGE;
-    const paginatedOrders = supplierOrders.slice(startIndex, endIndex);
+    // Count orders needing action
+    const ordersNeedingAction = useMemo(() => {
+        return supplierOrders.filter(order => order.status === 0).length;
+    }, [supplierOrders]);
 
-    // Reset to page 1 if current page becomes invalid
+    // Auto-select first order if none selected
     useEffect(() => {
-        if (currentPage > totalPages && totalPages > 0) {
-            setCurrentPage(1);
+        if (supplierOrders.length > 0 && !supplierOrders.find(o => o.orderId === selectedOrderId)) {
+            setSelectedOrderId(supplierOrders[0].orderId);
         }
-    }, [currentPage, totalPages]);
-
-    // Auto-select first order on current page if none selected
-    useEffect(() => {
-        if (paginatedOrders.length > 0 && !paginatedOrders.find(o => o.orderId === selectedOrderId)) {
-            setSelectedOrderId(paginatedOrders[0].orderId);
-        }
-    }, [paginatedOrders, selectedOrderId]);
+    }, [supplierOrders, selectedOrderId]);
 
     const selectedOrder = supplierOrders.find(order => order.orderId === selectedOrderId);
 
@@ -133,10 +131,101 @@ const SupplierOrders = () => {
         }
     };
 
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
+    // Get current filter values
+    const statusFilter = columnFilters.find(f => f.id === 'status')?.value;
+
+    // Handle "Needs Action" quick filter toggle
+    const handleNeedsActionToggle = () => {
+        const newValue = !needsActionFilter;
+        setNeedsActionFilter(newValue);
+        
+        if (newValue) {
+            // Set status filter to "Created" (0)
+            setColumnFilters(prev => {
+                const filtered = prev.filter(f => f.id !== 'status');
+                return [...filtered, { id: 'status', value: '0' }];
+            });
+        } else {
+            // Clear status filter
+            setColumnFilters(prev => prev.filter(f => f.id !== 'status'));
         }
+    };
+
+    // Sync needsActionFilter with status filter
+    useEffect(() => {
+        setNeedsActionFilter(statusFilter === '0');
+    }, [statusFilter]);
+
+    // Table columns
+    const columns = useMemo(() => [
+        {
+            accessorKey: 'orderId',
+            header: 'Order #',
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    <span className="font-semibold">#{row.original.orderId}</span>
+                    {row.original.status === 0 && (
+                        <span className="w-2 h-2 rounded-full bg-[#FCCC04] animate-pulse" title="Needs action" />
+                    )}
+                </div>
+            ),
+        },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            cell: ({ row }) => (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(row.original.status)}`}>
+                    {getStatusLabel(row.original.status)}
+                </span>
+            ),
+            filterFn: (row, columnId, filterValue) => {
+                if (!filterValue) return true;
+                return row.original.status === parseInt(filterValue);
+            },
+        },
+        {
+            id: 'airline',
+            header: 'Airline',
+            cell: () => (
+                <span className="font-mono text-xs">
+                    {airlineAddress ? `${airlineAddress.slice(0, 6)}...${airlineAddress.slice(-4)}` : 'Loading...'}
+                </span>
+            ),
+            // For future multi-airline support
+            filterFn: (row, columnId, filterValue) => {
+                if (!filterValue) return true;
+                return airlineAddress?.toLowerCase().includes(filterValue.toLowerCase()) || false;
+            },
+        },
+        {
+            accessorKey: 'quantityLitres',
+            header: 'Quantity',
+            cell: ({ row }) => (
+                <span>{row.original.quantityLitres} L</span>
+            ),
+            enableSorting: true,
+        },
+        {
+            accessorKey: 'totalAmount',
+            header: 'Total',
+            cell: ({ row }) => (
+                <span className="font-medium">{row.original.totalAmount} CAM</span>
+            ),
+            enableSorting: true,
+            sortingFn: (rowA, rowB) => {
+                return parseFloat(rowA.original.totalAmount) - parseFloat(rowB.original.totalAmount);
+            },
+        },
+    ], [airlineAddress]);
+
+    const handleStatusFilterChange = (value) => {
+        setColumnFilters(prev => {
+            const filtered = prev.filter(f => f.id !== 'status');
+            if (value) {
+                return [...filtered, { id: 'status', value }];
+            }
+            return filtered;
+        });
     };
 
     if (!currentAccount) {
@@ -210,8 +299,8 @@ const SupplierOrders = () => {
     return (
         <div className="flex w-full justify-center items-start flex-1 min-h-full">
             <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto px-4 py-8 gap-6">
-                {/* Left Panel - Order Index */}
-                <div className="lg:w-1/3 w-full">
+                {/* Left Panel - Order Table */}
+                <div className="lg:w-1/2 w-full">
                     <div className="sticky top-8">
                         <div className="flex justify-between items-start mb-2">
                             <h1 className="text-2xl sm:text-3xl text-black font-semibold">
@@ -230,6 +319,11 @@ const SupplierOrders = () => {
                         </div>
                         <p className="text-black font-normal text-sm opacity-70 mb-4">
                             {supplierOrders.length} order{supplierOrders.length !== 1 ? 's' : ''} assigned to you
+                            {ordersNeedingAction > 0 && (
+                                <span className="ml-2 px-2 py-0.5 bg-[#FCCC04] text-black text-xs font-semibold rounded-full">
+                                    {ordersNeedingAction} pending
+                                </span>
+                            )}
                         </p>
 
                         {/* Feedback Messages */}
@@ -244,84 +338,56 @@ const SupplierOrders = () => {
                             </Alert>
                         )}
 
-                        {/* Order List */}
-                        <div className="space-y-2 mb-4">
-                            {paginatedOrders.map((order) => (
-                                <button
-                                    key={order.orderId}
-                                    onClick={() => setSelectedOrderId(order.orderId)}
-                                    className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
-                                        selectedOrderId === order.orderId
-                                            ? 'bg-[#FCCC04]/30 border-2 border-[#FCCC04]'
-                                            : 'bg-white/50 border border-gray-200 hover:border-[#FCCC04]/50'
-                                    }`}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-semibold text-black">Order #{order.orderId}</span>
-                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                                            {getStatusLabel(order.status)}
+                        {/* Filters */}
+                        <FilterBar>
+                            <QuickFilterButton
+                                active={needsActionFilter}
+                                onClick={handleNeedsActionToggle}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Needs Action
+                                    {ordersNeedingAction > 0 && (
+                                        <span className="bg-black/20 px-1.5 py-0.5 rounded text-xs">
+                                            {ordersNeedingAction}
                                         </span>
-                                    </div>
-                                    <div className="flex justify-between items-center mt-2 text-sm">
-                                        <span className="text-black/60">{order.quantityLitres} L</span>
-                                        <span className="font-medium text-black">{order.totalAmount} CAM</span>
-                                    </div>
+                                    )}
+                                </span>
+                            </QuickFilterButton>
+                            <FilterLabel>Status:</FilterLabel>
+                            <StatusFilter
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                            />
+                            {columnFilters.length > 0 && (
+                                <button
+                                    onClick={() => setColumnFilters([])}
+                                    className="text-xs text-black/60 hover:text-red-500 underline"
+                                >
+                                    Clear filters
                                 </button>
-                            ))}
-                        </div>
+                            )}
+                        </FilterBar>
 
-                        {/* Pagination Controls */}
-                        {totalPages > 1 && (
-                            <div className="flex items-center justify-between bg-white/50 rounded-xl p-3 border border-gray-200">
-                                <Button
-                                    onClick={() => goToPage(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </Button>
-                                
-                                <div className="flex items-center gap-1">
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                        <button
-                                            key={page}
-                                            onClick={() => goToPage(page)}
-                                            className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
-                                                currentPage === page
-                                                    ? 'bg-[#FCCC04] text-black'
-                                                    : 'text-black/60 hover:bg-[#FCCC04]/20'
-                                            }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <Button
-                                    onClick={() => goToPage(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </Button>
-                            </div>
-                        )}
-
-                        {/* Page info */}
-                        {totalPages > 1 && (
-                            <p className="text-center text-black/50 text-xs mt-2">
-                                Showing {startIndex + 1}-{Math.min(endIndex, supplierOrders.length)} of {supplierOrders.length} orders
-                            </p>
-                        )}
+                        {/* Data Table */}
+                        <DataTable
+                            data={supplierOrders}
+                            columns={columns}
+                            sorting={sorting}
+                            setSorting={setSorting}
+                            columnFilters={columnFilters}
+                            setColumnFilters={setColumnFilters}
+                            onRowClick={(row) => setSelectedOrderId(row.orderId)}
+                            selectedRowId={selectedOrderId}
+                            pageSize={5}
+                        />
                     </div>
                 </div>
 
                 {/* Right Panel - Order Detail */}
-                <div className="lg:w-2/3 w-full">
+                <div className="lg:w-1/2 w-full">
                     {selectedOrder ? (
                         <div className="blue-glassmorphism p-6 rounded-2xl">
                             {/* Header */}
@@ -425,7 +491,7 @@ const SupplierOrders = () => {
                         </div>
                     ) : (
                         <div className="blue-glassmorphism p-6 rounded-2xl flex items-center justify-center min-h-[400px]">
-                            <p className="text-black/60">Select an order from the list to view details</p>
+                            <p className="text-black/60">Select an order from the table to view details</p>
                         </div>
                     )}
                 </div>

@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FuelSettlementContext } from '../context/FuelSettlementContext';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
 import { Loader } from './';
-
-const ORDERS_PER_PAGE = 5;
+import { DataTable } from './ui/DataTable';
+import { StatusFilter, AddressFilter, FilterBar, FilterLabel } from './ui/TableFilters';
 
 const OrdersList = () => {
     const navigate = useNavigate();
@@ -23,9 +23,12 @@ const OrdersList = () => {
     } = useContext(FuelSettlementContext);
 
     const [selectedOrderId, setSelectedOrderId] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
     const [actionLoading, setActionLoading] = useState(false);
     const [isFetchingOrders, setIsFetchingOrders] = useState(false);
+    
+    // Table state
+    const [sorting, setSorting] = useState([{ id: 'orderId', desc: true }]); // Default: newest first
+    const [columnFilters, setColumnFilters] = useState([]);
 
     // Force refresh orders when component mounts and when account changes
     const refreshOrders = useCallback(async () => {
@@ -72,27 +75,20 @@ const OrdersList = () => {
         }
     }, [error, success, setError, setSuccess]);
 
-    // Pagination calculations
-    const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-    const endIndex = startIndex + ORDERS_PER_PAGE;
-    const paginatedOrders = orders.slice(startIndex, endIndex);
-
-    // Reset to page 1 if current page becomes invalid
+    // Auto-select first order if none selected
     useEffect(() => {
-        if (currentPage > totalPages && totalPages > 0) {
-            setCurrentPage(1);
+        if (orders.length > 0 && !orders.find(o => o.orderId === selectedOrderId)) {
+            setSelectedOrderId(orders[0].orderId);
         }
-    }, [currentPage, totalPages]);
-
-    // Auto-select first order on current page if none selected
-    useEffect(() => {
-        if (paginatedOrders.length > 0 && !paginatedOrders.find(o => o.orderId === selectedOrderId)) {
-            setSelectedOrderId(paginatedOrders[0].orderId);
-        }
-    }, [paginatedOrders, selectedOrderId]);
+    }, [orders, selectedOrderId]);
 
     const selectedOrder = orders.find(order => order.orderId === selectedOrderId);
+
+    // Get unique suppliers for filter
+    const uniqueSuppliers = useMemo(() => {
+        const suppliers = [...new Set(orders.map(o => o.supplier))];
+        return suppliers;
+    }, [orders]);
 
     const getStatusLabel = (status) => {
         const statusMap = {
@@ -127,10 +123,84 @@ const OrdersList = () => {
         }
     };
 
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
+    // Get current filter values
+    const statusFilter = columnFilters.find(f => f.id === 'status')?.value;
+    const supplierFilter = columnFilters.find(f => f.id === 'supplier')?.value;
+
+    // Table columns
+    const columns = useMemo(() => [
+        {
+            accessorKey: 'orderId',
+            header: 'Order #',
+            cell: ({ row }) => (
+                <span className="font-semibold">#{row.original.orderId}</span>
+            ),
+        },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            cell: ({ row }) => (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(row.original.status)}`}>
+                    {getStatusLabel(row.original.status)}
+                </span>
+            ),
+            filterFn: (row, columnId, filterValue) => {
+                if (!filterValue) return true;
+                return row.original.status === parseInt(filterValue);
+            },
+        },
+        {
+            accessorKey: 'supplier',
+            header: 'Supplier',
+            cell: ({ row }) => (
+                <span className="font-mono text-xs">
+                    {row.original.supplier.slice(0, 6)}...{row.original.supplier.slice(-4)}
+                </span>
+            ),
+            filterFn: (row, columnId, filterValue) => {
+                if (!filterValue) return true;
+                return row.original.supplier.toLowerCase().includes(filterValue.toLowerCase());
+            },
+        },
+        {
+            accessorKey: 'quantityLitres',
+            header: 'Quantity',
+            cell: ({ row }) => (
+                <span>{row.original.quantityLitres} L</span>
+            ),
+            enableSorting: true,
+        },
+        {
+            accessorKey: 'totalAmount',
+            header: 'Total',
+            cell: ({ row }) => (
+                <span className="font-medium">{row.original.totalAmount} CAM</span>
+            ),
+            enableSorting: true,
+            sortingFn: (rowA, rowB) => {
+                return parseFloat(rowA.original.totalAmount) - parseFloat(rowB.original.totalAmount);
+            },
+        },
+    ], []);
+
+    const handleStatusFilterChange = (value) => {
+        setColumnFilters(prev => {
+            const filtered = prev.filter(f => f.id !== 'status');
+            if (value) {
+                return [...filtered, { id: 'status', value }];
+            }
+            return filtered;
+        });
+    };
+
+    const handleSupplierFilterChange = (value) => {
+        setColumnFilters(prev => {
+            const filtered = prev.filter(f => f.id !== 'supplier');
+            if (value) {
+                return [...filtered, { id: 'supplier', value }];
+            }
+            return filtered;
+        });
     };
 
     if (!currentAccount) {
@@ -210,8 +280,8 @@ const OrdersList = () => {
     return (
         <div className="flex w-full justify-center items-start flex-1 min-h-full">
             <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto px-4 py-8 gap-6">
-                {/* Left Panel - Order Index */}
-                <div className="lg:w-1/3 w-full">
+                {/* Left Panel - Order Table */}
+                <div className="lg:w-1/2 w-full">
                     <div className="sticky top-8">
                         <div className="flex justify-between items-start mb-2">
                             <h1 className="text-2xl sm:text-3xl text-black font-semibold">
@@ -257,84 +327,46 @@ const OrdersList = () => {
                             </Alert>
                         )}
 
-                        {/* Order List */}
-                        <div className="space-y-2 mb-4">
-                            {paginatedOrders.map((order) => (
+                        {/* Filters */}
+                        <FilterBar>
+                            <FilterLabel>Filter:</FilterLabel>
+                            <StatusFilter
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                            />
+                            <AddressFilter
+                                value={supplierFilter}
+                                onChange={handleSupplierFilterChange}
+                                placeholder="Search supplier..."
+                                className="w-40"
+                            />
+                            {columnFilters.length > 0 && (
                                 <button
-                                    key={order.orderId}
-                                    onClick={() => setSelectedOrderId(order.orderId)}
-                                    className={`w-full p-4 rounded-xl text-left transition-all duration-200 ${
-                                        selectedOrderId === order.orderId
-                                            ? 'bg-[#FCCC04]/30 border-2 border-[#FCCC04]'
-                                            : 'bg-white/50 border border-gray-200 hover:border-[#FCCC04]/50'
-                                    }`}
+                                    onClick={() => setColumnFilters([])}
+                                    className="text-xs text-black/60 hover:text-red-500 underline"
                                 >
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-semibold text-black">Order #{order.orderId}</span>
-                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                                            {getStatusLabel(order.status)}
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center mt-2 text-sm">
-                                        <span className="text-black/60">{order.quantityLitres} L</span>
-                                        <span className="font-medium text-black">{order.totalAmount} CAM</span>
-                                    </div>
+                                    Clear filters
                                 </button>
-                            ))}
-                        </div>
+                            )}
+                        </FilterBar>
 
-                        {/* Pagination Controls */}
-                        {totalPages > 1 && (
-                            <div className="flex items-center justify-between bg-white/50 rounded-xl p-3 border border-gray-200">
-                                <Button
-                                    onClick={() => goToPage(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </Button>
-                                
-                                <div className="flex items-center gap-1">
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                        <button
-                                            key={page}
-                                            onClick={() => goToPage(page)}
-                                            className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
-                                                currentPage === page
-                                                    ? 'bg-[#FCCC04] text-black'
-                                                    : 'text-black/60 hover:bg-[#FCCC04]/20'
-                                            }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <Button
-                                    onClick={() => goToPage(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </Button>
-                            </div>
-                        )}
-
-                        {/* Page info */}
-                        {totalPages > 1 && (
-                            <p className="text-center text-black/50 text-xs mt-2">
-                                Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
-                            </p>
-                        )}
+                        {/* Data Table */}
+                        <DataTable
+                            data={orders}
+                            columns={columns}
+                            sorting={sorting}
+                            setSorting={setSorting}
+                            columnFilters={columnFilters}
+                            setColumnFilters={setColumnFilters}
+                            onRowClick={(row) => setSelectedOrderId(row.orderId)}
+                            selectedRowId={selectedOrderId}
+                            pageSize={5}
+                        />
                     </div>
                 </div>
 
                 {/* Right Panel - Order Detail */}
-                <div className="lg:w-2/3 w-full">
+                <div className="lg:w-1/2 w-full">
                     {selectedOrder ? (
                         <div className="blue-glassmorphism p-6 rounded-2xl">
                             {/* Header */}
@@ -430,7 +462,7 @@ const OrdersList = () => {
                         </div>
                     ) : (
                         <div className="blue-glassmorphism p-6 rounded-2xl flex items-center justify-center min-h-[400px]">
-                            <p className="text-black/60">Select an order from the list to view details</p>
+                            <p className="text-black/60">Select an order from the table to view details</p>
                         </div>
                     )}
                 </div>

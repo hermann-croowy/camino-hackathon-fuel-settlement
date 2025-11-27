@@ -78,14 +78,14 @@ export const SenderProvider = ({ children }) => {
 
     const checkIfTransactionsExist = async () => {
         try {
-            const senderContract = await getEthereumContract()
-            const transactionCount = await transactionCount.getTransactionCount()
+            if (!ethereum) return;
+            
+            const senderContract = getEthereumContract()
+            const currentTransactionCount = await senderContract.getTransactionCount()
 
-            window.localStorage.setItem("transactionCount", transactionCount)
+            window.localStorage.setItem("transactionCount", currentTransactionCount)
         } catch (error) {
             console.log(error);
-
-            throw new Error("No ethereum object.")
         }
     }
 
