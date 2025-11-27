@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { Loader } from './';
 import { DataTable } from './ui/DataTable';
 import { StatusFilter, AddressFilter, FilterBar, FilterLabel } from './ui/TableFilters';
+import { generateQuickInvoice } from '../utils/invoiceGenerator';
 
 const OrdersList = () => {
     const navigate = useNavigate();
@@ -445,17 +446,38 @@ const OrdersList = () => {
                                             {selectedOrder.status === 4 && "This order was declined by the supplier."}
                                         </p>
                                     </div>
-                                    {/* Invoice button for Delivered (1) or Settled (2) orders */}
+                                    {/* Invoice buttons for Delivered (1) or Settled (2) orders */}
                                     {(selectedOrder.status === 1 || selectedOrder.status === 2) && (
-                                        <Button
-                                            onClick={() => navigate(`/create-invoice/${selectedOrder.orderId}`)}
-                                            className="w-full text-black border-2 p-3 h-auto border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            create invoice
-                                        </Button>
+                                        <div className="space-y-3">
+                                            <Button
+                                                onClick={() => {
+                                                    const success = generateQuickInvoice(selectedOrder);
+                                                    if (success) {
+                                                        setSuccess('Invoice generated successfully!');
+                                                    } else {
+                                                        setError('Failed to generate invoice. Please try again.');
+                                                    }
+                                                }}
+                                                className="w-full text-black border-2 p-3 h-auto border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                quick invoice
+                                            </Button>
+                                            <Button
+                                                onClick={() => navigate(`/create-invoice/${selectedOrder.orderId}`)}
+                                                className="w-full text-black border-2 p-3 h-auto border-[#4C4C4B]/30 bg-white/50 hover:bg-[#4C4C4B]/10 rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                                customize invoice
+                                            </Button>
+                                            <p className="text-black/50 text-xs text-center">
+                                                Quick invoice uses demo supplier data. Customize to edit details.
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             )}
