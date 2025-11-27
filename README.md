@@ -241,11 +241,6 @@ Contributions, issues, and feature requests are welcome!
 Give a ⭐️ if you like this project!
 
 ## Acknowledgments
-
-<p align="center">
-  <img src="https://github.com/juuroudojo/images/blob/main/camino-logo.png" height="80" />
-</p>
-
 Special thanks to:
 
 - **[Chain4Travel](https://chain4travel.com/)** for organizing this hackathon and building the Camino Network
@@ -254,10 +249,10 @@ Special thanks to:
 
 ### Hackathon Organizers
 
+- **Chain4Travel**
 - **Tech Tourism Cluster**
 - **ACCIÓ** — Catalonia Trade & Investment, Generalitat de Catalunya
 - **Hospitalidad Emprendedora**
-- **Chain4Travel**
 
 ### Partners
 
