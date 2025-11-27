@@ -72,8 +72,8 @@ const DataTable = ({
     return (
         <div className="w-full">
             {/* Table */}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white/50">
-                <table className="w-full">
+            <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white/50 shadow-sm">
+                <table className="w-full min-w-[500px]">
                     <thead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id} className="border-b border-gray-200 bg-white/70">
@@ -81,7 +81,8 @@ const DataTable = ({
                                     <th
                                         key={header.id}
                                         className={cn(
-                                            "px-4 py-3 text-left text-sm font-semibold text-black",
+                                            "px-3 py-4 text-left text-sm font-semibold text-black whitespace-nowrap",
+                                            "md:px-5 md:py-4",
                                             header.column.getCanSort() && "cursor-pointer select-none hover:bg-[#FCCC04]/10"
                                         )}
                                         onClick={header.column.getToggleSortingHandler()}
@@ -107,7 +108,7 @@ const DataTable = ({
                             <tr>
                                 <td
                                     colSpan={columns.length}
-                                    className="px-4 py-8 text-center text-black/60"
+                                    className="px-4 py-12 text-center text-black/60"
                                 >
                                     No orders found
                                 </td>
@@ -127,7 +128,7 @@ const DataTable = ({
                                     {row.getVisibleCells().map((cell) => (
                                         <td
                                             key={cell.id}
-                                            className="px-4 py-3 text-sm text-black"
+                                            className="px-3 py-4 text-sm text-black md:px-5"
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
@@ -144,56 +145,55 @@ const DataTable = ({
 
             {/* Pagination */}
             {table.getPageCount() > 1 && (
-                <div className="flex items-center justify-between mt-4 bg-white/50 rounded-xl p-3 border border-gray-200">
-                    <button
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="text-black p-2 border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-4 bg-white/50 rounded-xl p-3 md:p-4 border border-gray-200 gap-3">
+                    <p className="text-black/50 text-sm order-2 sm:order-1">
+                        Showing {pagination.pageIndex * pageSize + 1}-
+                        {Math.min(
+                            (pagination.pageIndex + 1) * pageSize,
+                            table.getFilteredRowModel().rows.length
+                        )}{" "}
+                        of {table.getFilteredRowModel().rows.length} orders
+                    </p>
+                    
+                    <div className="flex items-center gap-2 order-1 sm:order-2">
+                        <button
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                            className="text-black p-2 border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
 
-                    <div className="flex items-center gap-1">
-                        {Array.from({ length: table.getPageCount() }, (_, i) => i).map((page) => (
-                            <button
-                                key={page}
-                                onClick={() => table.setPageIndex(page)}
-                                className={cn(
-                                    "w-8 h-8 rounded-lg text-sm font-medium transition-all",
-                                    table.getState().pagination.pageIndex === page
-                                        ? "bg-[#FCCC04] text-black"
-                                        : "text-black/60 hover:bg-[#FCCC04]/20"
-                                )}
-                            >
-                                {page + 1}
-                            </button>
-                        ))}
+                        <div className="flex items-center gap-1">
+                            {Array.from({ length: table.getPageCount() }, (_, i) => i).map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => table.setPageIndex(page)}
+                                    className={cn(
+                                        "w-9 h-9 rounded-lg text-sm font-medium transition-all",
+                                        table.getState().pagination.pageIndex === page
+                                            ? "bg-[#FCCC04] text-black"
+                                            : "text-black/60 hover:bg-[#FCCC04]/20"
+                                    )}
+                                >
+                                    {page + 1}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                            className="text-black p-2 border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
                     </div>
-
-                    <button
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                        className="text-black p-2 border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
                 </div>
-            )}
-
-            {/* Page info */}
-            {table.getPageCount() > 1 && (
-                <p className="text-center text-black/50 text-xs mt-2">
-                    Showing {pagination.pageIndex * pageSize + 1}-
-                    {Math.min(
-                        (pagination.pageIndex + 1) * pageSize,
-                        table.getFilteredRowModel().rows.length
-                    )}{" "}
-                    of {table.getFilteredRowModel().rows.length} orders
-                </p>
             )}
         </div>
     );
