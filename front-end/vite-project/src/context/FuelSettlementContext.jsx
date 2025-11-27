@@ -17,6 +17,7 @@ const getFuelSettlementContract = () => {
 export const FuelSettlementProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState("");
     const [orders, setOrders] = useState([]);
+    const [airlineAddress, setAirlineAddress] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -58,6 +59,10 @@ export const FuelSettlementProvider = ({ children }) => {
 
             setIsLoading(true);
             const fuelSettlementContract = getFuelSettlementContract();
+            
+            // Get the airline address
+            const airline = await fuelSettlementContract.airline();
+            setAirlineAddress(airline);
             
             // Get the total number of orders
             const newOrderId = await fuelSettlementContract.newOrderId();
@@ -251,6 +256,7 @@ export const FuelSettlementProvider = ({ children }) => {
             currentAccount,
             connectWallet,
             orders,
+            airlineAddress,
             getAllOrders,
             createFuelOrder,
             cancelOrder,

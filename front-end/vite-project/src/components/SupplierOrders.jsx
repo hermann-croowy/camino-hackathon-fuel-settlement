@@ -11,6 +11,7 @@ const SupplierOrders = () => {
         currentAccount,
         connectWallet,
         orders,
+        airlineAddress,
         getAllOrders,
         confirmDelivery,
         declineOrder,
@@ -349,10 +350,10 @@ const SupplierOrders = () => {
                                 </div>
                             </div>
 
-                            {/* Supplier Address */}
+                            {/* Airline Address */}
                             <div className="bg-white/30 rounded-xl p-4 mb-6">
-                                <p className="text-black/60 text-sm mb-1">Supplier Address (You)</p>
-                                <p className="text-black font-mono text-sm break-all">{selectedOrder.supplier}</p>
+                                <p className="text-black/60 text-sm mb-1">Airline Address (Order Creator)</p>
+                                <p className="text-black font-mono text-sm break-all">{airlineAddress || 'Loading...'}</p>
                             </div>
 
                             {/* Actions */}
