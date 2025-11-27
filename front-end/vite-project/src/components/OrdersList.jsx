@@ -207,6 +207,32 @@ const OrdersList = () => {
             },
         },
         {
+            accessorKey: 'timestamp',
+            header: 'Date & Time',
+            cell: ({ row }) => {
+                const date = row.original.timestamp;
+                const dateStr = date.toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                const timeStr = date.toLocaleTimeString('en-GB', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                return (
+                    <div className="flex flex-col">
+                        <span className="text-sm">{dateStr}</span>
+                        <span className="text-xs text-black/50">{timeStr}</span>
+                    </div>
+                );
+            },
+            enableSorting: true,
+            sortingFn: (rowA, rowB) => {
+                return rowA.original.timestamp.getTime() - rowB.original.timestamp.getTime();
+            },
+        },
+        {
             accessorKey: 'supplier',
             header: 'Supplier',
             cell: ({ row }) => (

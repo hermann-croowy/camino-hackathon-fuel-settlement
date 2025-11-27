@@ -86,6 +86,17 @@ export const FuelSettlementProvider = ({ children }) => {
             const structuredOrders = ordersData.map((order, index) => {
                 const orderId = order.orderId.toNumber();
                 const flightData = getFlightDataForOrder(orderId);
+                
+                // Generate a realistic timestamp based on orderId
+                // Orders are spread across the last 30 days, with higher IDs being more recent
+                const now = new Date();
+                const daysAgo = Math.max(0, 30 - (orderId * 3)); // Spread orders over ~30 days
+                const hoursOffset = (orderId * 7) % 24; // Vary the hour
+                const minutesOffset = (orderId * 13) % 60; // Vary the minutes
+                const orderDate = new Date(now);
+                orderDate.setDate(orderDate.getDate() - daysAgo);
+                orderDate.setHours(hoursOffset, minutesOffset, 0, 0);
+                
                 return {
                     orderId,
                     supplier: order.supplier,
@@ -95,7 +106,8 @@ export const FuelSettlementProvider = ({ children }) => {
                     status: order.status,
                     deliveryConfirmed: order.deliveryConfirmed,
                     flight: flightData.flight,
-                    planeId: flightData.planeId
+                    planeId: flightData.planeId,
+                    timestamp: orderDate
                 };
             });
 
