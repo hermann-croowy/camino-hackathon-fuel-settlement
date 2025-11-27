@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FuelSettlementContext } from '../context/FuelSettlementContext';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
@@ -7,13 +6,14 @@ import { Loader } from './';
 
 const ORDERS_PER_PAGE = 5;
 
-const OrdersList = () => {
-    const navigate = useNavigate();
+const SupplierOrders = () => {
     const {
         currentAccount,
         connectWallet,
         orders,
         getAllOrders,
+        confirmDelivery,
+        declineOrder,
         cancelOrder,
         isLoading,
         error,
@@ -61,11 +61,16 @@ const OrdersList = () => {
         }
     }, [error, success, setError, setSuccess]);
 
+    // Filter orders where current account is the supplier
+    const supplierOrders = orders.filter(
+        (order) => currentAccount && order.supplier.toLowerCase() === currentAccount.toLowerCase()
+    );
+
     // Pagination calculations
-    const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
+    const totalPages = Math.ceil(supplierOrders.length / ORDERS_PER_PAGE);
     const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
     const endIndex = startIndex + ORDERS_PER_PAGE;
-    const paginatedOrders = orders.slice(startIndex, endIndex);
+    const paginatedOrders = supplierOrders.slice(startIndex, endIndex);
 
     // Reset to page 1 if current page becomes invalid
     useEffect(() => {
@@ -81,7 +86,7 @@ const OrdersList = () => {
         }
     }, [paginatedOrders, selectedOrderId]);
 
-    const selectedOrder = orders.find(order => order.orderId === selectedOrderId);
+    const selectedOrder = supplierOrders.find(order => order.orderId === selectedOrderId);
 
     const getStatusLabel = (status) => {
         const statusMap = {
@@ -127,13 +132,13 @@ const OrdersList = () => {
             <div className="flex w-full justify-center items-center flex-1 min-h-full">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
-                        Orders
+                        Supplier Portal
                     </h1>
                     <p className="text-center mt-4 text-black font-normal text-base opacity-70">
-                        View and manage all your fuel orders
+                        Manage fuel orders assigned to you as a supplier
                     </p>
                     <div className="p-6 w-full flex flex-col justify-start items-center blue-glassmorphism mt-8">
-                        <p className="text-black text-base mb-4 text-center">Connect your wallet to view your orders</p>
+                        <p className="text-black text-base mb-4 text-center">Connect your wallet to view your supplier orders</p>
                         <Button 
                             onClick={connectWallet}
                             className="text-black w-full border-[1px] p-2 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
@@ -146,12 +151,12 @@ const OrdersList = () => {
         );
     }
 
-    if (isLoading && orders.length === 0) {
+    if (isLoading && supplierOrders.length === 0) {
         return (
             <div className="flex w-full justify-center items-center flex-1 min-h-full">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
-                        Orders
+                        Supplier Portal
                     </h1>
                     <p className="text-center mt-4 text-black font-normal text-base opacity-70">
                         Loading your orders...
@@ -164,29 +169,23 @@ const OrdersList = () => {
         );
     }
 
-    if (orders.length === 0) {
+    if (supplierOrders.length === 0) {
         return (
             <div className="flex w-full justify-center items-center flex-1 min-h-full">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
-                        Orders
+                        Supplier Portal
                     </h1>
                     <p className="text-center mt-4 text-black font-normal text-base opacity-70">
-                        View and manage all your fuel orders
+                        Manage fuel orders assigned to you as a supplier
                     </p>
                     <div className="p-6 w-full flex flex-col justify-start items-center blue-glassmorphism mt-8">
                         <Alert>
-                            <AlertDescription className="text-black">No orders found. Create your first order!</AlertDescription>
+                            <AlertDescription className="text-black">No orders found for your supplier address</AlertDescription>
                         </Alert>
                         <Button 
-                            onClick={() => navigate('/create-order')}
-                            className="text-black w-full mt-4 border-[1px] p-2 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
-                        >
-                            new order
-                        </Button>
-                        <Button 
                             onClick={refreshOrders}
-                            className="text-black w-full mt-2 border-[1px] p-2 border-[#4C4C4B] hover:bg-[#4C4C4B]/20 rounded-full cursor-pointer bg-transparent vueling-lowercase"
+                            className="text-black w-full mt-4 border-[1px] p-2 border-[#4C4C4B] hover:bg-[#4C4C4B]/20 rounded-full cursor-pointer bg-transparent vueling-lowercase"
                         >
                             refresh orders
                         </Button>
@@ -204,35 +203,22 @@ const OrdersList = () => {
                     <div className="sticky top-8">
                         <div className="flex justify-between items-start mb-2">
                             <h1 className="text-2xl sm:text-3xl text-black font-semibold">
-                                Orders
+                                Supplier Portal
                             </h1>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={refreshOrders}
-                                    disabled={isLoading}
-                                    className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent"
-                                    title="Refresh orders"
-                                >
-                                    <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
-                                </Button>
-                            </div>
+                            <Button
+                                onClick={refreshOrders}
+                                disabled={isLoading}
+                                className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent"
+                                title="Refresh orders"
+                            >
+                                <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </Button>
                         </div>
                         <p className="text-black font-normal text-sm opacity-70 mb-4">
-                            {orders.length} order{orders.length !== 1 ? 's' : ''} total
+                            {supplierOrders.length} order{supplierOrders.length !== 1 ? 's' : ''} assigned to you
                         </p>
-
-                        {/* New Order Button */}
-                        <Button 
-                            onClick={() => navigate('/create-order')}
-                            className="text-black w-full mb-4 border-[1px] p-3 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            new order
-                        </Button>
 
                         {/* Feedback Messages */}
                         {error && (
@@ -316,7 +302,7 @@ const OrdersList = () => {
                         {/* Page info */}
                         {totalPages > 1 && (
                             <p className="text-center text-black/50 text-xs mt-2">
-                                Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
+                                Showing {startIndex + 1}-{Math.min(endIndex, supplierOrders.length)} of {supplierOrders.length} orders
                             </p>
                         )}
                     </div>
@@ -330,7 +316,7 @@ const OrdersList = () => {
                             <div className="flex justify-between items-start mb-6 pb-4 border-b border-black/10">
                                 <div>
                                     <h2 className="text-2xl font-semibold text-black">Order #{selectedOrder.orderId}</h2>
-                                    <p className="text-black/60 text-sm mt-1">Fuel order details</p>
+                                    <p className="text-black/60 text-sm mt-1">You are the supplier for this order</p>
                                 </div>
                                 <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${getStatusColor(selectedOrder.status)}`}>
                                     {getStatusLabel(selectedOrder.status)}
@@ -365,7 +351,7 @@ const OrdersList = () => {
 
                             {/* Supplier Address */}
                             <div className="bg-white/30 rounded-xl p-4 mb-6">
-                                <p className="text-black/60 text-sm mb-1">Supplier Address</p>
+                                <p className="text-black/60 text-sm mb-1">Supplier Address (You)</p>
                                 <p className="text-black font-mono text-sm break-all">{selectedOrder.supplier}</p>
                             </div>
 
@@ -378,11 +364,31 @@ const OrdersList = () => {
                                             <Loader />
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 gap-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                            <Button
+                                                onClick={() => handleAction(confirmDelivery, selectedOrder.orderId)}
+                                                disabled={actionLoading}
+                                                className="text-[#FCCC04] border-2 p-3 h-auto border-[#FCCC04] bg-white hover:bg-[#FCCC04] hover:text-black rounded-xl cursor-pointer font-semibold vueling-lowercase flex flex-col items-center gap-1 transition-all duration-200"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                confirm delivery
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleAction(declineOrder, selectedOrder.orderId)}
+                                                disabled={actionLoading}
+                                                className="text-red-500 border-2 p-3 h-auto border-red-500 bg-white hover:bg-red-500 hover:text-white rounded-xl cursor-pointer font-semibold vueling-lowercase flex flex-col items-center gap-1 transition-all duration-200"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                decline order
+                                            </Button>
                                             <Button
                                                 onClick={() => handleAction(cancelOrder, selectedOrder.orderId)}
                                                 disabled={actionLoading}
-                                                className="text-red-500 border-2 p-3 h-auto border-red-500 bg-white hover:bg-red-500 hover:text-white rounded-xl cursor-pointer font-semibold vueling-lowercase flex flex-col items-center gap-1 transition-all duration-200"
+                                                className="text-[#4C4C4B] border-2 p-3 h-auto border-[#4C4C4B] bg-white hover:bg-[#4C4C4B] hover:text-white rounded-xl cursor-pointer font-semibold vueling-lowercase flex flex-col items-center gap-1 transition-all duration-200"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
@@ -399,7 +405,7 @@ const OrdersList = () => {
                                             {selectedOrder.status === 1 && "This order has been delivered and is awaiting settlement."}
                                             {selectedOrder.status === 2 && "This order has been completed and settled."}
                                             {selectedOrder.status === 3 && "This order was cancelled."}
-                                            {selectedOrder.status === 4 && "This order was declined by the supplier."}
+                                            {selectedOrder.status === 4 && "This order was declined."}
                                         </p>
                                     </div>
                                 </div>
@@ -416,4 +422,4 @@ const OrdersList = () => {
     );
 };
 
-export default OrdersList;
+export default SupplierOrders;

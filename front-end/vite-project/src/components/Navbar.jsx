@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { HiMenuAlt4 } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
 
-import logo from '../../images/logo.png'
+import logo from '../../images/vueling-logo.svg'
 
 const NavbarItem = ({title, classProps, to }) => {
     if (to) {
@@ -26,12 +26,13 @@ const Navbar = () => {
     return (
         <nav className="w-full flex md:justify-center justify-between items-center p-4">
             <div className='md:flex-[0.5] flex-initial justify-center items-center'>
-                <img src={logo} alt="logo" className = "w-32 cursor-pointer"/>
+                <img src={logo} alt="Vueling logo" className = "w-32 cursor-pointer"/>
             </div>
             <ul className='text-black md:flex hidden list-none flex-row justify-between items-center flex-initial vueling-lowercase'>
                 <NavbarItem title="home" to="/" />
                 <NavbarItem title="create order" to="/create-order" />
                 <NavbarItem title="orders" to="/orders" />
+                <NavbarItem title="supplier" to="/supplier" />
             </ul>
             <div className="flex relative">
                 {toggleMenu
@@ -50,6 +51,7 @@ const Navbar = () => {
                         <NavbarItem title="home" to="/" classProps='my-2 text-lg vueling-lowercase' />
                         <NavbarItem title="create order" to="/create-order" classProps='my-2 text-lg vueling-lowercase' />
                         <NavbarItem title="orders" to="/orders" classProps='my-2 text-lg vueling-lowercase' />
+                        <NavbarItem title="supplier" to="/supplier" classProps='my-2 text-lg vueling-lowercase' />
                     </ul>
                 )
                 }
