@@ -250,7 +250,7 @@ const CreateOrderForm = () => {
                                     value={formData.supplierAddress}
                                     onChange={handleInputChange}
                                     step={undefined}
-                                    className="bg-white/50 text-black border-black/10 placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
+                                    className="bg-white/50 text-black border-2 border-black placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
                                 />
                                 {validationErrors.supplierAddress && (
                                     <p className="text-sm text-red-500 mt-1">{validationErrors.supplierAddress}</p>
@@ -269,7 +269,7 @@ const CreateOrderForm = () => {
                                         onChange={handleInputChange}
                                         step="1"
                                         min="1"
-                                        className="bg-white/50 text-black border-black/10 placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
+                                        className="bg-white/50 text-black border-2 border-black placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
                                     />
                                     {validationErrors.quantityLitres && (
                                         <p className="text-sm text-red-500 mt-1">{validationErrors.quantityLitres}</p>
@@ -286,7 +286,7 @@ const CreateOrderForm = () => {
                                         onChange={handleInputChange}
                                         step="0.000001"
                                         min="0"
-                                        className="bg-white/50 text-black border-black/10 placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
+                                        className="bg-white/50 text-black border-2 border-black placeholder:text-black/40 focus-visible:ring-[#FCCC04] rounded-lg"
                                     />
                                     {validationErrors.pricePerLitre && (
                                         <p className="text-sm text-red-500 mt-1">{validationErrors.pricePerLitre}</p>

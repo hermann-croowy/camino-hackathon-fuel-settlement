@@ -1,15 +1,31 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useViewMode } from '../context/ViewModeContext';
 import { MdFlight, MdLocalGasStation } from 'react-icons/md';
 
 const ViewModeToggle = () => {
     const { viewMode, toggleViewMode, isAirline, isSupplier } = useViewMode();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleToggle = () => {
+        // Check if switching to supplier mode from an airline-only page
+        const isOnAirlineOnlyPage = location.pathname === '/create-order' || 
+                                     location.pathname.startsWith('/create-invoice');
+        
+        if (isAirline && isOnAirlineOnlyPage) {
+            // Navigate to home when switching to supplier mode from airline-only pages
+            navigate('/', { replace: true });
+        }
+        
+        toggleViewMode();
+    };
 
     return (
         <div className="flex items-center gap-2">
             <div 
                 className="relative flex items-center bg-white/30 backdrop-blur-sm rounded-full p-1 cursor-pointer border border-black/10"
-                onClick={toggleViewMode}
+                onClick={handleToggle}
             >
                 {/* Sliding background indicator */}
                 <div 
