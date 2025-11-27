@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import { FuelSettlementContext } from '../context/FuelSettlementContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Alert, AlertDescription } from './ui/alert';
+import { DatePicker } from './ui/date-picker';
 import { Loader } from './';
 import { 
     VUELING_INFO, 
@@ -37,8 +39,8 @@ const CreateInvoice = () => {
         
         // Invoice metadata
         invoiceNumber: generateInvoiceNumber(orderId),
-        issueDate: new Date().toISOString().split('T')[0],
-        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        issueDate: new Date(),
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         
         // Description
         description: DEFAULT_INVOICE_SETTINGS.description
@@ -47,6 +49,10 @@ const CreateInvoice = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleDateChange = (field, date) => {
+        setFormData(prev => ({ ...prev, [field]: date }));
     };
 
     const getEURValues = () => {
@@ -76,7 +82,14 @@ const CreateInvoice = () => {
         setIsGenerating(true);
         setError(null);
 
-        const success = generateInvoicePDF(order, formData);
+        // Format dates as strings for PDF generation
+        const pdfFormData = {
+            ...formData,
+            issueDate: formData.issueDate ? format(formData.issueDate, 'dd/MM/yyyy') : '',
+            dueDate: formData.dueDate ? format(formData.dueDate, 'dd/MM/yyyy') : ''
+        };
+
+        const success = generateInvoicePDF(order, pdfFormData);
         
         if (success) {
             setIsGenerating(false);
@@ -271,25 +284,23 @@ const CreateInvoice = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label htmlFor="issueDate" className="text-black">Issue Date</Label>
-                                        <Input
-                                            id="issueDate"
-                                            name="issueDate"
-                                            type="date"
-                                            value={formData.issueDate}
-                                            onChange={handleInputChange}
-                                            className="mt-1 bg-white/50 border-gray-300 text-black"
-                                        />
+                                        <div className="mt-1">
+                                            <DatePicker
+                                                date={formData.issueDate}
+                                                onDateChange={(date) => handleDateChange('issueDate', date)}
+                                                placeholder="Select issue date"
+                                            />
+                                        </div>
                                     </div>
                                     <div>
                                         <Label htmlFor="dueDate" className="text-black">Due Date</Label>
-                                        <Input
-                                            id="dueDate"
-                                            name="dueDate"
-                                            type="date"
-                                            value={formData.dueDate}
-                                            onChange={handleInputChange}
-                                            className="mt-1 bg-white/50 border-gray-300 text-black"
-                                        />
+                                        <div className="mt-1">
+                                            <DatePicker
+                                                date={formData.dueDate}
+                                                onDateChange={(date) => handleDateChange('dueDate', date)}
+                                                placeholder="Select due date"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                                 <div>
