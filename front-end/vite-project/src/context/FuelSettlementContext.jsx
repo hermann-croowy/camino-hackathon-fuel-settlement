@@ -9,7 +9,12 @@ const { ethereum } = window;
 const getFuelSettlementContract = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const contractAddress = import.meta.env.VITE_FUEL_SETTLEMENT_ADDRESS || '0x81605cE13a42Cb0Bb024660d3C89Ad3e7fE8B2EF';
+    const contractAddress = import.meta.env.VITE_FUEL_SETTLEMENT_ADDRESS;
+    
+    if (!contractAddress) {
+        throw new Error("VITE_FUEL_SETTLEMENT_ADDRESS environment variable is not set");
+    }
+    
     const fuelSettlementContract = new ethers.Contract(contractAddress, FuelSettlementABI.abi, signer);
     return fuelSettlementContract;
 }

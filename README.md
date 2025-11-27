@@ -2,131 +2,272 @@
   <img src="https://github.com/juuroudojo/images/blob/main/camino-logo.png" height="150" />
 </p>
 
-<br/>
+# Fuel Settlement dApp
 
+![](https://img.shields.io/badge/Solidity-363636?logo=solidity&logoColor=white) ![](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) ![](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white) ![](https://img.shields.io/badge/Hardhat-FFF100?logo=hardhat&logoColor=black) ![](https://img.shields.io/badge/Camino_Network-00C389?logoColor=white)
 
+> Blockchain-powered instant settlement for aviation fuel supply chains
 
-# 🌎 Camino Builder
+## About The Challenge
 
-Learn how to deploy and work with smart contracts on Camino network. Dive into different features and techniques employed in smart contracts. This repo will walk you through all of it and teach you how to build the travel industry of the future in simple terms.
+Current B2B aviation payment cycles create significant cash flow challenges: suppliers deliver services immediately but wait **30-90 days** for payment, while airlines manage credit risk and complex reconciliation processes. The manual verification required for each invoice — did the fuel quantity match the order? was it delivered to the correct aircraft? — adds delays and potential for disputes.
 
+This challenge explores how smart contracts on **Camino Network** can automate the full supplier payment cycle: from service registration to validation and instant payment execution. Using blockchain-based logic, payments are released automatically once pre-set conditions are met — ensuring **transparency**, **trust**, and **speed**.
 
-# ⚡ STARTER DOMAIN ⚡
+## Our Solution
 
-![Banner](https://github.com/juuroudojo/toolsReal/blob/main/images1/quickstart.png)
+The Fuel Settlement dApp demonstrates how **instant settlement benefits both parties**:
 
-## STEP 1: 
+- **Suppliers** receive immediate payment upon delivery confirmation, improving their working capital
+- **Airlines** gain transparent verification, reducing reconciliation overhead and disputes
+- **Both parties** benefit from an immutable audit trail showing exactly when service was delivered, who authorized it, and when payment executed
 
-> Install [Node.js](https://nodejs.org/en/download/) (version 14.x or higher). (If you don't have it already). Unless anything starts breaking this is enough. To check that node is installed correctly, run `node -v` in your terminal. If you see a version number, you are good to go.
+### How It Works
 
-## STEP 2: 
-
-> When you have node installed, you can install Hardhat by running `npm install --save-dev hardhat`. This will install Hardhat in your project. To check that you are on the right track, run `npx hardhat` in your terminal. If everything is going smooth you'll see a list of commands.
-
-## STEP 3: 
-
-1. > Clone the repo by running 
-
-```
-git clone https://github.com/chain4travel/camino-builder.git
-```
-
-2.  > CD into the root directory by running
+Our smart contract (`FuelSettlement.sol`) implements a complete fuel order lifecycle:
 
 ```
-cd camino-builder
-
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│   Created   │ ───► │  Delivered  │ ───► │   Settled   │      │  Cancelled  │
+│  (Escrow)   │      │ (Confirmed) │      │   (Paid)    │      │ (Refunded)  │
+└─────────────┘      └─────────────┘      └─────────────┘      └─────────────┘
+       │                                                              ▲
+       └──────────────────────────────────────────────────────────────┘
+                              (Airline cancels or Supplier declines)
 ```
 
-3. > Install all the dependencies that are prepared for you in package.json by running
+1. **Order Creation**: Airline creates a fuel order specifying supplier, quantity, and price. Funds are locked in escrow.
+2. **Delivery Confirmation**: Supplier confirms fuel delivery (could be triggered by IoT sensors or manual input)
+3. **Instant Settlement**: Upon confirmation, payment is automatically released to supplier via CAM tokens
+4. **Dispute Protection**: Either party can cancel/decline before delivery, with automatic refund to airline
 
+### Key Features
+
+- **Escrow-based Payments**: Funds locked on order creation, released automatically on delivery confirmation
+- **Role-based Access Control**: Airlines create/cancel orders; Suppliers confirm/decline deliveries
+- **Immutable Audit Trail**: All transactions recorded on Camino blockchain
+- **CAM Token Settlement**: Native token payments on Camino Columbus testnet
+- **Real-time Order Tracking**: Frontend displays order status, quantities, and payment amounts
+- **Invoice Generation**: PDF invoice creation for completed orders
+
+### Smart Contract Architecture
+
+```solidity
+enum OrderStatus { Created, Delivered, Settled, Cancelled, Declined }
+
+struct FuelOrder {
+    uint256 orderId;
+    address payable supplier;
+    uint256 quantityLitres;
+    uint256 pricePerLitre;
+    uint256 totalAmount;
+    OrderStatus status;
+    bool deliveryConfirmed;
+}
 ```
+
+**Core Functions:**
+- `createFuelOrder()` — Airline creates order with escrowed payment
+- `confirmDelivery()` — Supplier confirms delivery, triggering instant payment
+- `cancelOrder()` — Airline cancels order before delivery (full refund)
+- `declineOrder()` — Supplier declines order (full refund to airline)
+
+## Built With
+
+**Smart Contracts:**
+- Solidity ^0.8.9
+- Hardhat
+- OpenZeppelin Contracts
+- Ethers.js v5
+
+**Frontend:**
+- React 18
+- Vite
+- TailwindCSS
+- React Router
+- Lucide Icons
+
+**Blockchain:**
+- Camino Network (Columbus Testnet)
+- CAM Tokens
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v14.x or higher)
+- [MetaMask](https://metamask.io/) or [Camino Wallet](https://suite.camino.network)
+- CAM tokens on Columbus testnet
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/hermann-croowy/camino-hackathon-fuel-settlement.git
+cd camino-hackathon-fuel-settlement
+```
+
+2. Install dependencies:
+```bash
+npm install
+cd front-end/vite-project
 npm install
 ```
 
-### And you are ready to go! 🚀
+3. Configure environment variables:
+```bash
+# In project root, create .env for contract deployment
+cp .env.example .env
+# Edit with your private key and RPC URL
 
-Now you don't need to create your project from scratch. You can use the project available for you in the repo. Build you contracts by changing or making new files in contracts/, use the script presets in scripts/ to deploy them. Good luck! 
+# In front-end/vite-project, create .env for frontend
+cd front-end/vite-project
+cp .env.example .env
+```
 
+4. Set the contract address in `front-end/vite-project/.env`:
+```env
+VITE_FUEL_SETTLEMENT_ADDRESS=0x81605cE13a42Cb0Bb024660d3C89Ad3e7fE8B2EF
+```
 
-## Contents
+**Note:** Replace with your deployed FuelSettlement contract address.
 
-- [Deployed contracts](#deployed-interactable-contracts)
-- [Theory](https://github.com/chain4travel/camino-builder/tree/c4t/theory)
-- [Start Building](#start-building)
-- [Testing](#testing)
-- [Learn More](#learn-more)
-- [Contact Us](#contact-us)
+### Network Configuration
 
-## ✳️ DECODE Preparation & Announcements
+Add Camino Columbus Network to MetaMask:
 
-- While in many cases you can use almost any wallet, a big part of functionality requires you to have a Camino Wallet. You can create one [here](https://suite.camino.network/login/). Hackathon participants are asked to pass a KYC-verfication process in advance, so that it doesn't slow you down during your building process.
+| Setting | Value |
+|---------|-------|
+| **Network Name** | Camino Columbus |
+| **RPC URL** | https://columbus.camino.network/ext/bc/C/rpc |
+| **Chain ID** | 501 |
+| **Currency Symbol** | CAM |
+| **Block Explorer** | https://columbus-explorer.camino.network/ |
 
+### Deploy Smart Contract
 
-> 🚩 NOTES: 
-- After cloning the repo - the only setup you need to perform is [setting up .env](https://github.com/chain4travel/camino-builder/setup). It is unique for each subdir! Hardhat won't be able to pull from .env that is located in the root directory!
-- When compiling smart contracts for Columbus testnet with Remix IDE, don't forget to set the EVM version as 'istanbul'.
-(Default is 'shangai'). Otherwise the contract wouldn't compile.
+```bash
+# Compile contracts
+npx hardhat compile
 
-# 🌑 BUILDER DOMAIN 🌑
-![Explore](https://github.com/juuroudojo/toolsReal/blob/main/images1/explorer.png)
+# Deploy to Columbus testnet
+npx hardhat run scripts/deploy.ts --network columbus
+```
 
-## 📜 Start Building
- - 🍋  [Create your first NFT](https://github.com/chain4travel/camino-builder/tree/c4t/nft)
- - 🎫  [Make a token-gate access NFT](https://github.com/chain4travel/camino-builder/tree/c4t/token-gate)
- - 💸  [Create a KYC-compliant contract](https://github.com/chain4travel/camino-builder/tree/c4t/kyc)
- - 💎  [Deploy a token](https://github.com/chain4travel/camino-builder/tree/c4t/token)
- - 💵  [Build a staking smart contract](https://github.com/chain4travel/camino-builder/tree/c4t/staking)
- 
+### Run Frontend
 
-## Keep Learning
-- 💾 [Theory](https://github.com/chain4travel/camino-builder/tree/c4t/theory)
-- 🐚 [Security Studies](https://github.com/chain4travel/camino-builder/tree/c4t/security)
-- 🌸 [Front-end Integration](https://github.com/chain4travel/camino-builder/tree/c4t/front-end)
+```bash
+cd front-end/vite-project
+npm run dev
+```
 
-## 🔌 Testing
-- 1️⃣ [Intro to Tests](https://github.com/chain4travel/camino-builder/tree/c4t/testing/intro)
-- 2️⃣ [Structure of tests](https://github.com/chain4travel/camino-builder/tree/c4t/testing/structure)
+The app will start at [http://localhost:5173](http://localhost:5173)
 
-## 🔐 Take On Challenges
-- 🎲 [Pseudo-randomness Exploit](https://github.com/chain4travel/camino-builder/tree/c4t/challenges/random)
-- 🔂 [Reentrancy](https://github.com/chain4travel/camino-builder/tree/c4t/challenges/reentrancy)
+## Usage
 
+### As an Airline
 
-## 🔍 Learn More
-- [Solidity Documentation](https://docs.soliditylang.org/en/develop/)
-- [Camino Documentation](https://docs.camino.network/)
-- [Remix IDE](https://remix.ethereum.org/)
-- [Hardhat Documentation](https://hardhat.org/docs)
-- [Ehers.js](https://docs.ethers.org/)
-- [Waffle/Chai Matchers Documentation](https://ethereum-waffle.readthedocs.io/en/latest/matchers.html)
-- [Mocha](https://mochajs.org/)
-- [Web3.js](https://web3js.readthedocs.io/en/v1.10.0/)
-- [Viem](https://viem.sh/)
-- [Openzeppelin](https://www.openzeppelin.com/)
-- [Alchemy](https://www.alchemy.com/)
-- Static Analysis Tools: [Mythril](https://mythril.ai/), [Slither](https://github.com/crytic/slither)
-- Prep Session 1 Diagram: [.excalidraw](https://github.com/chain4travel/camino-builder/tree/c4t/utils/ps.excalidraw), [.svg](https://github.com/chain4travel/camino-builder/tree/c4t/utils/ps1.svg)
+1. Connect your wallet (must be the contract deployer address)
+2. Navigate to "Create Order"
+3. Enter supplier address, fuel quantity (litres), and price per litre
+4. Confirm the transaction — funds are locked in escrow
+5. View orders in "Orders" section
+6. Cancel orders if needed before delivery
 
-## ⌚ Developer Tools
-- [Gelato](https://www.gelato.network/automate)
-- [Chainlink](https://chain.link/)
-- [Tenderly](https://tenderly.co/)
-- [Code4rena](https://code4rena.com/)
+### As a Supplier
 
-## 🔦 Big Names and their Code
-- [Uniswap](https://github.com/Uniswap/v2-periphery/tree/master)
-- [Curve](https://github.com/curvefi/curve-contract)
-- [ZK Sync](https://github.com/code-423n4/2023-03-zksync/tree/main/contracts)
-- [ENS](https://github.com/code-423n4/2023-10-ens/tree/main/contracts)
-- [Arbitrum](https://github.com/ArbitrumFoundation/governance/tree/c18de53820c505fc459f766c1b224810eaeaabc5/src/security-council-mgmt)
-- [OpenSea](https://github.com/ProjectOpenSea/seaport/tree/5de7302bc773d9821ba4759e47fc981680911ea0/contracts)
+1. Connect your wallet (must match the supplier address on the order)
+2. Navigate to "Supplier Orders" to view assigned orders
+3. Confirm delivery when fuel has been supplied
+4. Receive instant payment in CAM tokens
+5. Generate and download invoices for completed orders
 
+### Order Status Flow
 
-## Contact Us
+| Status | Description |
+|--------|-------------|
+| **Created** | Order placed, funds in escrow |
+| **Delivered** | Supplier confirmed delivery |
+| **Settled** | Payment released to supplier |
+| **Cancelled** | Airline cancelled, funds refunded |
+| **Declined** | Supplier declined, funds refunded |
 
-We are always happy to help you learn. If you want some additional support or want to contribute reach out to us on [Discord](https://discord.gg/camino).
-  
+## Deployed Contracts
 
+| Contract | Address | Network |
+|----------|---------|---------|
+| FuelSettlement | `0x81605cE13a42Cb0Bb024660d3C89Ad3e7fE8B2EF` | Columbus Testnet |
 
+## Future Enhancements
 
+- **Camino Messenger Integration**: Extend with aviation-specific message types for fuel orders, pricing, and delivery confirmation
+- **IoT Sensor Integration**: Automatic delivery confirmation via fuel truck sensors
+- **Multi-signature Approval**: Complex approval workflows for large orders
+- **Analytics Dashboard**: Real-time reporting on settlement metrics and supplier performance
+
+## Testing
+
+```bash
+# Run smart contract tests
+npx hardhat test
+
+# Run frontend locally
+cd front-end/vite-project
+npm run dev
+```
+
+## Authors
+
+👤 **Hermann Wagner**
+- GitHub: [@hermann-croowy](https://github.com/hermann-croowy)
+- LinkedIn: [Hermann Wagner](https://www.linkedin.com/in/hermann-wagner/)
+
+👤 **Niklas Retzl**
+- GitHub: [@Nretzl](https://github.com/Nretzl)
+- LinkedIn: [Niklas Retzl](https://www.linkedin.com/in/niklas-retzl-093702368/)
+
+👤 **Luis Fernando Jiménez**
+- GitHub: [@lu-jim](https://github.com/lu-jim)
+- LinkedIn: [Luis Jiménez](https://www.linkedin.com/in/lujim/)
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+[Open an issue here](https://github.com/hermann-croowy/camino-hackathon-fuel-settlement/issues/new).
+
+## Show your support
+
+Give a ⭐️ if you like this project!
+
+## Acknowledgments
+
+<p align="center">
+  <img src="https://github.com/juuroudojo/images/blob/main/camino-logo.png" height="80" />
+</p>
+
+Special thanks to:
+
+- **[Chain4Travel](https://chain4travel.com/)** for organizing this hackathon and building the Camino Network
+- **[Camino Network](https://camino.network/)** for providing the blockchain infrastructure for the travel industry
+- **[Vueling](https://www.vueling.com/)** for the challenge prompt and guidance on aviation fuel settlement workflows
+
+### Hackathon Organizers
+
+- **Tech Tourism Cluster**
+- **ACCIÓ** — Catalonia Trade & Investment, Generalitat de Catalunya
+- **Hospitalidad Emprendedora**
+- **Chain4Travel**
+
+### Partners
+
+- **Vueling**
+- **TeamLabs**
+- **Future Travel**
+- **Barcelona Travel Hub**
+- **Nubemsystems**
+- **Clorian Ticketing**
+
+---
+
+*Built with ❤️ at the Camino Network Hackathon 2025*
