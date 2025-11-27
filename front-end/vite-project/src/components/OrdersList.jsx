@@ -145,7 +145,7 @@ const OrdersList = () => {
             accessorKey: 'orderId',
             header: 'Order #',
             cell: ({ row }) => (
-                <span className="font-semibold">#{row.original.orderId}</span>
+                <span className="font-semibold">#{row.original.orderId + 1}</span>
             ),
         },
         {
@@ -323,7 +323,7 @@ const OrdersList = () => {
 
     if (!currentAccount) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Orders
@@ -347,7 +347,7 @@ const OrdersList = () => {
 
     if (isFetchingOrders && orders.length === 0) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Orders
@@ -365,7 +365,7 @@ const OrdersList = () => {
 
     if (orders.length === 0) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Orders
@@ -396,7 +396,7 @@ const OrdersList = () => {
     }
 
     return (
-        <div className="flex w-full justify-center items-start flex-1 min-h-full">
+        <div className="flex w-full justify-center items-start flex-1">
             <div className="flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto px-4 py-8 gap-6">
                 {/* Left Panel - Order Table */}
                 <div className="xl:w-2/3 w-full">
@@ -490,7 +490,7 @@ const OrdersList = () => {
                             {/* Header */}
                             <div className="flex justify-between items-start mb-6 pb-4 border-b border-black/10">
                                 <div>
-                                    <h2 className="text-2xl font-semibold text-black">Order #{selectedOrder.orderId}</h2>
+                                    <h2 className="text-2xl font-semibold text-black">Order #{selectedOrder.orderId + 1}</h2>
                                     <p className="text-black/60 text-sm mt-1">Fuel order details</p>
                                 </div>
                                 <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${getStatusColor(selectedOrder.status)}`}>

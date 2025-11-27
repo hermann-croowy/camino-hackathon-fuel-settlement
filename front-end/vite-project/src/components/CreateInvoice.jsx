@@ -101,7 +101,7 @@ const CreateInvoice = () => {
 
     if (!currentAccount) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Create Invoice
@@ -125,7 +125,7 @@ const CreateInvoice = () => {
 
     if (contextLoading && orders.length === 0) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Create Invoice
@@ -143,13 +143,13 @@ const CreateInvoice = () => {
 
     if (!order) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Order Not Found
                     </h1>
                     <p className="text-center mt-4 text-black font-normal text-base opacity-70">
-                        The order #{orderId} could not be found.
+                        The order #{parseInt(orderId) + 1} could not be found.
                     </p>
                     <Button 
                         onClick={() => navigate('/')}
@@ -165,7 +165,7 @@ const CreateInvoice = () => {
     // Check if order is eligible for invoicing (Delivered or Settled)
     if (order.status !== 1 && order.status !== 2) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Invoice Not Available
@@ -187,7 +187,7 @@ const CreateInvoice = () => {
     const { pricePerLitreEUR, totalAmountEUR } = getEURValues();
 
     return (
-        <div className="flex w-full justify-center items-start flex-1 min-h-full">
+        <div className="flex w-full justify-center items-start flex-1">
             <div className="flex flex-col w-full max-w-[1600px] mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-6">
@@ -203,7 +203,7 @@ const CreateInvoice = () => {
                         <h1 className="text-2xl sm:text-3xl text-black font-semibold">
                             Create Invoice
                         </h1>
-                        <p className="text-black/60 text-sm mt-1">Order #{order.orderId}</p>
+                        <p className="text-black/60 text-sm mt-1">Order #{order.orderId + 1}</p>
                     </div>
                 </div>
 

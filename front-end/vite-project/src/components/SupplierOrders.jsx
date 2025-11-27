@@ -15,7 +15,6 @@ const SupplierOrders = () => {
         getAllOrders,
         confirmDelivery,
         declineOrder,
-        cancelOrder,
         isLoading,
         error,
         success,
@@ -157,7 +156,7 @@ const SupplierOrders = () => {
             header: 'Order #',
             cell: ({ row }) => (
                 <div className="flex items-center gap-2">
-                    <span className="font-semibold">#{row.original.orderId}</span>
+                    <span className="font-semibold">#{row.original.orderId + 1}</span>
                     {row.original.status === 0 && (
                         <span className="w-2 h-2 rounded-full bg-[#FCCC04] animate-pulse" title="Needs action" />
                     )}
@@ -224,7 +223,7 @@ const SupplierOrders = () => {
 
     if (!currentAccount) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Supplier Portal
@@ -248,7 +247,7 @@ const SupplierOrders = () => {
 
     if (isFetchingOrders && supplierOrders.length === 0) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Supplier Portal
@@ -266,7 +265,7 @@ const SupplierOrders = () => {
 
     if (supplierOrders.length === 0) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Supplier Portal
@@ -291,7 +290,7 @@ const SupplierOrders = () => {
     }
 
     return (
-        <div className="flex w-full justify-center items-start flex-1 min-h-full">
+        <div className="flex w-full justify-center items-start flex-1">
             <div className="flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto px-4 py-8 gap-6">
                 {/* Left Panel - Order Table */}
                 <div className="xl:w-2/3 w-full">
@@ -387,7 +386,7 @@ const SupplierOrders = () => {
                             {/* Header */}
                             <div className="flex justify-between items-start mb-6 pb-4 border-b border-black/10">
                                 <div>
-                                    <h2 className="text-2xl font-semibold text-black">Order #{selectedOrder.orderId}</h2>
+                                    <h2 className="text-2xl font-semibold text-black">Order #{selectedOrder.orderId + 1}</h2>
                                     <p className="text-black/60 text-sm mt-1">You are the supplier for this order</p>
                                 </div>
                                 <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${getStatusColor(selectedOrder.status)}`}>
@@ -436,7 +435,7 @@ const SupplierOrders = () => {
                                             <Loader />
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <Button
                                                 onClick={() => handleAction(confirmDelivery, selectedOrder.orderId)}
                                                 disabled={actionLoading}
@@ -456,16 +455,6 @@ const SupplierOrders = () => {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
                                                 decline order
-                                            </Button>
-                                            <Button
-                                                onClick={() => handleAction(cancelOrder, selectedOrder.orderId)}
-                                                disabled={actionLoading}
-                                                className="text-[#4C4C4B] border-2 p-3 h-auto border-[#4C4C4B] bg-white hover:bg-[#4C4C4B] hover:text-white rounded-xl cursor-pointer font-semibold vueling-lowercase flex flex-col items-center gap-1 transition-all duration-200"
-                                            >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                                </svg>
-                                                cancel order
                                             </Button>
                                         </div>
                                     )}

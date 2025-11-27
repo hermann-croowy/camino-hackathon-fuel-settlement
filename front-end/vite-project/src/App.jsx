@@ -18,7 +18,7 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className={`gradient-bg-welcome ${isFullHeightPage ? 'flex-1 flex flex-col min-h-screen' : ''}`}>
+      <div className={`gradient-bg-welcome ${isFullHeightPage ? 'flex-1 flex flex-col' : ''}`}>
         <Navbar />
         <Routes>
           {/* Home route - shows Orders for Airline, Supplier Orders for Supplier */}

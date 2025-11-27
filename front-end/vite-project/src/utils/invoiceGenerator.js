@@ -143,7 +143,7 @@ export const generateInvoicePDF = (order, formData) => {
         doc.setTextColor(...black);
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
-        doc.text(`Order Reference: #${order.orderId}`, margin + 5, yPos + 5.5);
+        doc.text(`Order Reference: #${order.orderId + 1}`, margin + 5, yPos + 5.5);
 
         yPos += 15;
 

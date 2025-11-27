@@ -129,7 +129,7 @@ const CreateOrderForm = () => {
 
     if (!currentAccount) {
         return (
-            <div className="flex w-full justify-center items-center flex-1 min-h-full">
+            <div className="flex w-full justify-center items-center flex-1">
                 <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-12">
                     <h1 className="text-3xl sm:text-4xl text-black py-1 text-center font-semibold">
                         Create Order
@@ -152,7 +152,7 @@ const CreateOrderForm = () => {
     }
 
     return (
-        <div className="flex w-full justify-center items-start flex-1 min-h-full">
+        <div className="flex w-full justify-center items-start flex-1">
             <div className="flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto px-4 py-8 gap-6">
                 {/* Left Panel - Form Info */}
                 <div className="xl:w-1/3 w-full">
