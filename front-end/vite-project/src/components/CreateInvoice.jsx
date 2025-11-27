@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FuelSettlementContext } from '../context/FuelSettlementContext';
 import { Button } from './ui/button';
@@ -27,6 +27,7 @@ const CreateInvoice = () => {
     const order = orders.find(o => o.orderId === parseInt(orderId));
     
     // Form state - pre-filled with demo supplier data
+    // ✅ Good: invoice number set in initial state since orderId is available from URL params
     const [formData, setFormData] = useState({
         // Exchange rate
         exchangeRate: DEFAULT_INVOICE_SETTINGS.exchangeRate,
@@ -35,19 +36,13 @@ const CreateInvoice = () => {
         ...DEMO_SUPPLIER_INFO,
         
         // Invoice metadata
-        invoiceNumber: '',
+        invoiceNumber: generateInvoiceNumber(orderId),
         issueDate: new Date().toISOString().split('T')[0],
         dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         
         // Description
         description: DEFAULT_INVOICE_SETTINGS.description
     });
-
-    // Generate invoice number on mount
-    useEffect(() => {
-        const invoiceNum = generateInvoiceNumber(orderId);
-        setFormData(prev => ({ ...prev, invoiceNumber: invoiceNum }));
-    }, [orderId]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

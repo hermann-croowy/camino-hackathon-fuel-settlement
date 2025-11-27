@@ -25,16 +25,12 @@ const CreateOrderForm = () => {
         pricePerLitre: ''
     });
 
-    const [totalCost, setTotalCost] = useState('0');
     const [validationErrors, setValidationErrors] = useState({});
 
-    useEffect(() => {
-        // Calculate total cost when quantity or price changes
-        const quantity = parseFloat(formData.quantityLitres) || 0;
-        const price = parseFloat(formData.pricePerLitre) || 0;
-        const total = quantity * price;
-        setTotalCost(total.toFixed(6));
-    }, [formData.quantityLitres, formData.pricePerLitre]);
+    // ✅ Good: calculated during rendering instead of useEffect + state
+    const quantity = parseFloat(formData.quantityLitres) || 0;
+    const price = parseFloat(formData.pricePerLitre) || 0;
+    const totalCost = (quantity * price).toFixed(6);
 
     useEffect(() => {
         // Clear messages after 5 seconds

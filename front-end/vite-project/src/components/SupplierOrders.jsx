@@ -30,7 +30,6 @@ const SupplierOrders = () => {
     // Table state
     const [sorting, setSorting] = useState([{ id: 'orderId', desc: true }]); // Default: newest first
     const [columnFilters, setColumnFilters] = useState([{ id: 'status', value: '0' }]); // Default: Needs Action filter
-    const [needsActionFilter, setNeedsActionFilter] = useState(true); // Enabled by default
 
     // Force refresh orders when component mounts and when account changes
     const refreshOrders = useCallback(async () => {
@@ -133,28 +132,23 @@ const SupplierOrders = () => {
 
     // Get current filter values
     const statusFilter = columnFilters.find(f => f.id === 'status')?.value;
+    
+    // ✅ Good: calculated during rendering instead of useEffect + state
+    const needsActionFilter = statusFilter === '0';
 
     // Handle "Needs Action" quick filter toggle
     const handleNeedsActionToggle = () => {
-        const newValue = !needsActionFilter;
-        setNeedsActionFilter(newValue);
-        
-        if (newValue) {
+        if (needsActionFilter) {
+            // Clear status filter
+            setColumnFilters(prev => prev.filter(f => f.id !== 'status'));
+        } else {
             // Set status filter to "Created" (0)
             setColumnFilters(prev => {
                 const filtered = prev.filter(f => f.id !== 'status');
                 return [...filtered, { id: 'status', value: '0' }];
             });
-        } else {
-            // Clear status filter
-            setColumnFilters(prev => prev.filter(f => f.id !== 'status'));
         }
     };
-
-    // Sync needsActionFilter with status filter
-    useEffect(() => {
-        setNeedsActionFilter(statusFilter === '0');
-    }, [statusFilter]);
 
     // Table columns
     const columns = useMemo(() => [
