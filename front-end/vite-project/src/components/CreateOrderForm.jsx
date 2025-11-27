@@ -153,9 +153,9 @@ const CreateOrderForm = () => {
 
     return (
         <div className="flex w-full justify-center items-start flex-1 min-h-full">
-            <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto px-4 py-8 gap-6">
+            <div className="flex flex-col xl:flex-row w-full max-w-[1600px] mx-auto px-4 py-8 gap-6">
                 {/* Left Panel - Form Info */}
-                <div className="lg:w-1/3 w-full">
+                <div className="xl:w-1/3 w-full">
                     <div className="sticky top-8">
                         <h1 className="text-2xl sm:text-3xl text-black font-semibold mb-2">
                             Create Order
@@ -209,7 +209,7 @@ const CreateOrderForm = () => {
                 </div>
 
                 {/* Right Panel - Order Form */}
-                <div className="lg:w-2/3 w-full">
+                <div className="xl:w-2/3 w-full">
                     <div className="blue-glassmorphism p-6 rounded-2xl">
                         {/* Header */}
                         <div className="flex justify-between items-start mb-6 pb-4 border-b border-black/10">

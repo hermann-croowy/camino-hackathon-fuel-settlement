@@ -188,7 +188,7 @@ const CreateInvoice = () => {
 
     return (
         <div className="flex w-full justify-center items-start flex-1 min-h-full">
-            <div className="flex flex-col w-full max-w-4xl mx-auto px-4 py-8">
+            <div className="flex flex-col w-full max-w-[1600px] mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-6">
                     <Button
@@ -213,7 +213,7 @@ const CreateInvoice = () => {
                     </Alert>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     {/* Left Column - Order Details & Exchange Rate */}
                     <div className="space-y-6">
                         {/* Order Summary */}
