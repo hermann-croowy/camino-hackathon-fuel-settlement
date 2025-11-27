@@ -13,8 +13,8 @@ const ViewModeToggle = () => {
             >
                 {/* Sliding background indicator */}
                 <div 
-                    className={`absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-[#FCCC04] rounded-full transition-all duration-300 ease-in-out shadow-md ${
-                        isAirline ? 'left-1' : 'left-[calc(50%+2px)]'
+                    className={`absolute h-[calc(100%-8px)] w-[calc(50%-2px)] bg-[#FCCC04] rounded-full transition-all duration-300 ease-in-out shadow-md ${
+                        isAirline ? 'left-1' : 'left-[calc(50%)]'
                     }`}
                 />
                 

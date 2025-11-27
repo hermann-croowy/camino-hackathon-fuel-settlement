@@ -49,6 +49,7 @@ const DataTable = ({
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         autoResetPageIndex: false,
+        enableSortingRemoval: false, // Only toggle between asc/desc, no unsorted state
     });
 
     // Only reset page when filters actually change (not on every render)
