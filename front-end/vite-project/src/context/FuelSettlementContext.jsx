@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import FuelSettlementABI from '../utils/FuelSettlement.json';
+import { getFlightDataForOrder } from '../utils/vuelingFlights';
 
 export const FuelSettlementContext = React.createContext();
 
@@ -82,15 +83,21 @@ export const FuelSettlementProvider = ({ children }) => {
             const ordersData = await Promise.all(ordersPromises);
 
             // Structure the orders data
-            const structuredOrders = ordersData.map((order, index) => ({
-                orderId: order.orderId.toNumber(),
-                supplier: order.supplier,
-                quantityLitres: order.quantityLitres.toNumber(),
-                pricePerLitre: ethers.utils.formatEther(order.pricePerLitre),
-                totalAmount: ethers.utils.formatEther(order.totalAmount),
-                status: order.status,
-                deliveryConfirmed: order.deliveryConfirmed
-            }));
+            const structuredOrders = ordersData.map((order, index) => {
+                const orderId = order.orderId.toNumber();
+                const flightData = getFlightDataForOrder(orderId);
+                return {
+                    orderId,
+                    supplier: order.supplier,
+                    quantityLitres: order.quantityLitres.toNumber(),
+                    pricePerLitre: ethers.utils.formatEther(order.pricePerLitre),
+                    totalAmount: ethers.utils.formatEther(order.totalAmount),
+                    status: order.status,
+                    deliveryConfirmed: order.deliveryConfirmed,
+                    flight: flightData.flight,
+                    planeId: flightData.planeId
+                };
+            });
 
             setOrders(structuredOrders);
             setIsLoading(false);

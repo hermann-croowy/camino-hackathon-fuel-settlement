@@ -162,6 +162,51 @@ const OrdersList = () => {
             },
         },
         {
+            accessorKey: 'flight',
+            header: 'Flight',
+            cell: ({ row }) => {
+                const flight = row.original.flight;
+                // Get first digit after VY prefix for color
+                const firstChar = flight.replace('VY', '').charAt(0);
+                const colorIndex = parseInt(firstChar) % 5;
+                const colors = [
+                    'bg-[#FCCC04]/20 text-[#A88900] border-[#FCCC04]', // Gold
+                    'bg-blue-100 text-blue-700 border-blue-300',       // Blue
+                    'bg-emerald-100 text-emerald-700 border-emerald-300', // Green
+                    'bg-violet-100 text-violet-700 border-violet-300', // Violet
+                    'bg-orange-100 text-orange-700 border-orange-300', // Orange
+                ];
+                return (
+                    <span className={`font-mono text-xs px-2 py-0.5 rounded-full border ${colors[colorIndex]}`}>
+                        {flight}
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'planeId',
+            header: 'Plane ID',
+            cell: ({ row }) => {
+                const planeId = row.original.planeId;
+                // Get first letter after EC- prefix for color
+                const firstChar = planeId.replace('EC-', '').charAt(0);
+                const charCode = firstChar.charCodeAt(0);
+                const colorIndex = charCode % 5;
+                const colors = [
+                    'bg-[#4C4C4B]/10 text-[#4C4C4B] border-[#4C4C4B]/30', // Gray
+                    'bg-sky-100 text-sky-700 border-sky-300',             // Sky
+                    'bg-rose-100 text-rose-700 border-rose-300',          // Rose
+                    'bg-teal-100 text-teal-700 border-teal-300',          // Teal
+                    'bg-amber-100 text-amber-700 border-amber-300',       // Amber
+                ];
+                return (
+                    <span className={`font-mono text-xs px-2 py-0.5 rounded-full border ${colors[colorIndex]}`}>
+                        {planeId}
+                    </span>
+                );
+            },
+        },
+        {
             accessorKey: 'supplier',
             header: 'Supplier',
             cell: ({ row }) => (
