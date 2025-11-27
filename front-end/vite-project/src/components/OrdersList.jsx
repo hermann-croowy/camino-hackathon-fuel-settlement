@@ -128,6 +128,17 @@ const OrdersList = () => {
     const statusFilter = columnFilters.find(f => f.id === 'status')?.value;
     const supplierFilter = columnFilters.find(f => f.id === 'supplier')?.value;
 
+    // Handle quick invoice generation from table
+    const handleQuickInvoice = (e, order) => {
+        e.stopPropagation(); // Prevent row click
+        const success = generateQuickInvoice(order);
+        if (success) {
+            setSuccess('Invoice generated successfully!');
+        } else {
+            setError('Failed to generate invoice. Please try again.');
+        }
+    };
+
     // Table columns
     const columns = useMemo(() => [
         {
@@ -181,6 +192,41 @@ const OrdersList = () => {
             sortingFn: (rowA, rowB) => {
                 return parseFloat(rowA.original.totalAmount) - parseFloat(rowB.original.totalAmount);
             },
+        },
+        {
+            id: 'invoice',
+            header: '',
+            cell: ({ row }) => {
+                const canInvoice = row.original.status === 1 || row.original.status === 2;
+                if (!canInvoice) return null;
+                
+                return (
+                    <button
+                        onClick={(e) => handleQuickInvoice(e, row.original)}
+                        className="p-1 hover:scale-110 transition-transform"
+                        title="Generate invoice"
+                    >
+                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                            {/* Document background - yellow */}
+                            <path 
+                                d="M6 2C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8.41421C20 7.88378 19.7893 7.37507 19.4142 7L15 2.58579C14.6249 2.21071 14.1162 2 13.5858 2H6Z" 
+                                fill="#FCCC04"
+                                stroke="black"
+                                strokeWidth="1.5"
+                            />
+                            {/* Folded corner */}
+                            <path 
+                                d="M14 2V6C14 7.10457 14.8954 8 16 8H20" 
+                                stroke="black"
+                                strokeWidth="1.5"
+                            />
+                            {/* Lines on document */}
+                            <path d="M8 12H16M8 16H16" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+                        </svg>
+                    </button>
+                );
+            },
+            enableSorting: false,
         },
     ], []);
 
@@ -446,38 +492,17 @@ const OrdersList = () => {
                                             {selectedOrder.status === 4 && "This order was declined by the supplier."}
                                         </p>
                                     </div>
-                                    {/* Invoice buttons for Delivered (1) or Settled (2) orders */}
+                                    {/* Custom invoice button for Delivered (1) or Settled (2) orders */}
                                     {(selectedOrder.status === 1 || selectedOrder.status === 2) && (
-                                        <div className="space-y-3">
-                                            <Button
-                                                onClick={() => {
-                                                    const success = generateQuickInvoice(selectedOrder);
-                                                    if (success) {
-                                                        setSuccess('Invoice generated successfully!');
-                                                    } else {
-                                                        setError('Failed to generate invoice. Please try again.');
-                                                    }
-                                                }}
-                                                className="w-full text-black border-2 p-3 h-auto border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
-                                            >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                                quick invoice
-                                            </Button>
-                                            <Button
-                                                onClick={() => navigate(`/create-invoice/${selectedOrder.orderId}`)}
-                                                className="w-full text-black border-2 p-3 h-auto border-[#4C4C4B]/30 bg-white/50 hover:bg-[#4C4C4B]/10 rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
-                                            >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                                customize invoice
-                                            </Button>
-                                            <p className="text-black/50 text-xs text-center">
-                                                Quick invoice uses demo supplier data. Customize to edit details.
-                                            </p>
-                                        </div>
+                                        <Button
+                                            onClick={() => navigate(`/create-invoice/${selectedOrder.orderId}`)}
+                                            className="w-full text-black border-2 p-3 h-auto border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-xl cursor-pointer font-semibold vueling-lowercase flex items-center justify-center gap-2 transition-all duration-200"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            custom invoice
+                                        </Button>
                                     )}
                                 </div>
                             )}
