@@ -342,7 +342,7 @@ const CreateInvoice = () => {
                         The order #{orderId} could not be found.
                     </p>
                     <Button 
-                        onClick={() => navigate('/orders')}
+                        onClick={() => navigate('/')}
                         className="text-black mt-8 border-[1px] p-2 px-6 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
                     >
                         back to orders
@@ -364,7 +364,7 @@ const CreateInvoice = () => {
                         Invoices can only be generated for delivered or settled orders.
                     </p>
                     <Button 
-                        onClick={() => navigate('/orders')}
+                        onClick={() => navigate('/')}
                         className="text-black mt-8 border-[1px] p-2 px-6 border-[#FCCC04] bg-[#FCCC04] hover:bg-[#e6b800] rounded-full cursor-pointer font-semibold vueling-lowercase"
                     >
                         back to orders
@@ -382,7 +382,7 @@ const CreateInvoice = () => {
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-6">
                     <Button
-                        onClick={() => navigate('/orders')}
+                        onClick={() => navigate('/')}
                         className="text-black p-2 h-auto border border-[#4C4C4B]/30 hover:bg-[#4C4C4B]/10 rounded-lg cursor-pointer bg-transparent"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

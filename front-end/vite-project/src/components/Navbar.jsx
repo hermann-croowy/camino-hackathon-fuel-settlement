@@ -4,6 +4,8 @@ import { HiMenuAlt4 } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
 
 import logo from '../../images/vueling-logo.svg'
+import ViewModeToggle from './ViewModeToggle';
+import { useViewMode } from '../context/ViewModeContext';
 
 const NavbarItem = ({title, classProps, to }) => {
     if (to) {
@@ -22,36 +24,70 @@ const NavbarItem = ({title, classProps, to }) => {
 
 const Navbar = () => {
     const [toggleMenu, setToggleMenu] = useState(false);
+    const { isAirline, isSupplier } = useViewMode();
+
+    // Airline navigation items
+    const airlineNavItems = [
+        { title: "orders", to: "/" },
+        { title: "create order", to: "/create-order" },
+    ];
+
+    // Supplier navigation items
+    const supplierNavItems = [
+        { title: "orders", to: "/" },
+    ];
+
+    const navItems = isAirline ? airlineNavItems : supplierNavItems;
 
     return (
         <nav className="w-full flex md:justify-center justify-between items-center p-4">
             <div className='md:flex-[0.5] flex-initial justify-center items-center'>
-                <img src={logo} alt="Vueling logo" className = "w-32 cursor-pointer"/>
+                <Link to="/">
+                    <img src={logo} alt="Vueling logo" className="w-32 cursor-pointer"/>
+                </Link>
             </div>
+            
+            {/* Desktop Navigation */}
             <ul className='text-black md:flex hidden list-none flex-row justify-between items-center flex-initial vueling-lowercase'>
-                <NavbarItem title="home" to="/" />
-                <NavbarItem title="create order" to="/create-order" />
-                <NavbarItem title="orders" to="/orders" />
-                <NavbarItem title="supplier" to="/supplier" />
+                {navItems.map((item, index) => (
+                    <NavbarItem key={index} title={item.title} to={item.to} />
+                ))}
             </ul>
-            <div className="flex relative">
+
+            {/* View Mode Toggle - visible on desktop */}
+            <div className="md:flex hidden ml-4">
+                <ViewModeToggle />
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="flex relative md:hidden">
                 {toggleMenu
-                    ? <AiOutlineClose fontSize={28} className='text-black md:hidden cursor-pointer' onClick={() => setToggleMenu(false)} />
-                    : <HiMenuAlt4 fontSize={28} className='text-black md:hidden cursor-pointer' onClick={() => setToggleMenu(true)} /> }
+                    ? <AiOutlineClose fontSize={28} className='text-black cursor-pointer' onClick={() => setToggleMenu(false)} />
+                    : <HiMenuAlt4 fontSize={28} className='text-black cursor-pointer' onClick={() => setToggleMenu(true)} /> }
 
                 {toggleMenu && (
                     <ul
-                    className='z-10 fixed top-0 right-2 p-3 w-[70wv] h-screen shadow-2x1 list-none
+                    className='z-10 fixed top-0 right-2 p-3 w-[70vw] h-screen shadow-2xl list-none
                         flex flex-col justify-start items-end rounded-md blue-glassmorphism text-black animate-slide-in
                     '
                     >
                         <li className='text-xl w-full my-2'>
                             <AiOutlineClose onClick={() => setToggleMenu(false)} />
                         </li>
-                        <NavbarItem title="home" to="/" classProps='my-2 text-lg vueling-lowercase' />
-                        <NavbarItem title="create order" to="/create-order" classProps='my-2 text-lg vueling-lowercase' />
-                        <NavbarItem title="orders" to="/orders" classProps='my-2 text-lg vueling-lowercase' />
-                        <NavbarItem title="supplier" to="/supplier" classProps='my-2 text-lg vueling-lowercase' />
+                        
+                        {/* Mobile View Mode Toggle */}
+                        <li className='my-4 w-full flex justify-end'>
+                            <ViewModeToggle />
+                        </li>
+                        
+                        {navItems.map((item, index) => (
+                            <NavbarItem 
+                                key={index} 
+                                title={item.title} 
+                                to={item.to} 
+                                classProps='my-2 text-lg vueling-lowercase' 
+                            />
+                        ))}
                     </ul>
                 )
                 }

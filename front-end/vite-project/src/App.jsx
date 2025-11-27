@@ -1,33 +1,36 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Navbar, Welcome, Footer, Services, Transactions, CreateOrderForm, OrdersList, SupplierOrders, CreateInvoice } from './components';
+import { Navbar, Footer, CreateOrderForm, OrdersList, SupplierOrders, CreateInvoice } from './components';
+import { useViewMode } from './context/ViewModeContext';
 
 const AppContent = () => {
   const location = useLocation();
+  const { isAirline } = useViewMode();
+
   const isCreateOrderPage = location.pathname === '/create-order';
-  const isOrdersPage = location.pathname === '/orders';
-  const isSupplierPage = location.pathname === '/supplier';
   const isCreateInvoicePage = location.pathname.startsWith('/create-invoice');
+  const isHomePage = location.pathname === '/';
+
+  // All pages now use the full-height layout
+  const isFullHeightPage = isCreateOrderPage || isCreateInvoicePage || isHomePage;
+
+  // Home component based on view mode
+  const HomeComponent = isAirline ? OrdersList : SupplierOrders;
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className={`gradient-bg-welcome ${isCreateOrderPage || isOrdersPage || isSupplierPage || isCreateInvoicePage ? 'flex-1 flex flex-col min-h-screen' : ''}`}>
+      <div className={`gradient-bg-welcome ${isFullHeightPage ? 'flex-1 flex flex-col min-h-screen' : ''}`}>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Welcome />} />
+          {/* Home route - shows Orders for Airline, Supplier Orders for Supplier */}
+          <Route path="/" element={<HomeComponent />} />
+          
+          {/* Airline routes - always defined for proper routing */}
           <Route path="/create-order" element={<CreateOrderForm />} />
-          <Route path="/orders" element={<OrdersList />} />
-          <Route path="/supplier" element={<SupplierOrders />} />
+          
+          {/* Supplier routes - always defined for proper routing */}
           <Route path="/create-invoice/:orderId" element={<CreateInvoice />} />
         </Routes>
       </div>
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Services />
-            <Transactions />
-          </>
-        } />
-      </Routes>
       <Footer />
     </div>
   );
