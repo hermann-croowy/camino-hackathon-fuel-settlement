@@ -167,16 +167,21 @@ const DataTable = ({
                 </table>
             </div>
 
-            {/* Pagination */}
-            {table.getPageCount() > 1 && (
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-4 bg-white/50 rounded-xl p-3 md:p-4 border border-gray-200 gap-3">
+            {/* Pagination - always visible for consistent UI */}
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-4 bg-white/50 rounded-xl p-3 md:p-4 border border-gray-200 gap-3">
                     <p className="text-black/50 text-sm order-2 sm:order-1">
-                        Showing {pagination.pageIndex * pageSize + 1}-
-                        {Math.min(
-                            (pagination.pageIndex + 1) * pageSize,
-                            table.getFilteredRowModel().rows.length
-                        )}{" "}
-                        of {table.getFilteredRowModel().rows.length} orders
+                        {table.getFilteredRowModel().rows.length === 0 ? (
+                            "Showing 0 of 0 orders"
+                        ) : (
+                            <>
+                                Showing {pagination.pageIndex * pageSize + 1}-
+                                {Math.min(
+                                    (pagination.pageIndex + 1) * pageSize,
+                                    table.getFilteredRowModel().rows.length
+                                )}{" "}
+                                of {table.getFilteredRowModel().rows.length} orders
+                            </>
+                        )}
                     </p>
                     
                     <div className="flex items-center gap-2 order-1 sm:order-2">
@@ -191,7 +196,7 @@ const DataTable = ({
                         </button>
 
                         <div className="flex items-center gap-1">
-                            {Array.from({ length: table.getPageCount() }, (_, i) => i).map((page) => (
+                            {Array.from({ length: Math.max(1, table.getPageCount()) }, (_, i) => i).map((page) => (
                                 <button
                                     key={page}
                                     onClick={() => table.setPageIndex(page)}
@@ -218,7 +223,6 @@ const DataTable = ({
                         </button>
                     </div>
                 </div>
-            )}
         </div>
     );
 };
